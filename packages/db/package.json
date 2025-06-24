@@ -1,0 +1,29 @@
+{
+  "name": "@workspace/db",
+  "version": "0.5.3",
+  "description": "",
+  "keywords": [],
+  "author": {
+    "name": "youming-bot",
+    "email": "um1ng@pm.me",
+    "url": "https://github.com/youming-bot"
+  },
+  "license": "MIT",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev --skip-generate",
+    "db:deploy": "prisma migrate deploy",
+    "db:push": "prisma db push --skip-generate",
+    "db:studio": "prisma studio"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "packageManager": "pnpm@10.12.2",
+  "devDependencies": {
+    "prisma": "^6.10.1"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.10.1"
+  }
+}

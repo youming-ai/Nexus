@@ -1,0 +1,40 @@
+{
+  "name": "nexus",
+  "version": "0.5.3",
+  "private": true,
+  "keywords": [
+    "turbo",
+    "nextjs",
+    "tailwind css",
+    "shadcn/ui",
+    "prisma",
+    "supabase"
+  ],
+  "author": {
+    "name": "youming-bot",
+    "email": "um1ng@pm.me",
+    "url": "https://github.com/youming-bot"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "eslint": "^9.29.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.0",
+    "turbo": "^2.5.4",
+    "typescript": "5.8.3"
+  },
+  "packageManager": "pnpm@10.12.2",
+  "engines": {
+    "node": ">=22.16.0"
+  }
+}
