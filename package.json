@@ -11,9 +11,9 @@
     "supabase"
   ],
   "author": {
-    "name": "youming-bot",
+    "name": "youming-ai",
     "email": "um1ng@pm.me",
-    "url": "https://github.com/youming-bot"
+    "url": "https://github.com/youming-ai"
   },
   "license": "MIT",
   "scripts": {
@@ -26,11 +26,11 @@
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "eslint": "^9.29.0",
+    "eslint": "^9.37.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.2",
-    "prettier": "^3.6.0",
-    "turbo": "^2.5.4",
+    "lint-staged": "^16.2.4",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.8",
     "typescript": "5.8.3"
   },
   "packageManager": "pnpm@10.12.2",

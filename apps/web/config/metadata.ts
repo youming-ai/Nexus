@@ -21,7 +21,7 @@ const siteConfig = {
     "pnpm",
     "workspace",
   ],
-  author: "youming-bot",
+  author: "youming-ai",
 };
 
 export const metadata: Metadata = {

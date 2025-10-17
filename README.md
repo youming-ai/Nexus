@@ -89,7 +89,7 @@ Nexus is a production-ready, full-stack monorepo starter kit that provides every
 
 ```bash
 # Clone the repository
-git clone https://github.com/youming-bot/nexus.git
+git clone https://github.com/youming-ai/nexus.git
 cd nexus
 
 # Install dependencies
@@ -307,5 +307,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <p>Built with ❤️ by <a href="https://github.com/youming-bot">youming-bot</a></p>
+  <p>Built with ❤️ by <a href="https://github.com/youming-ai">youming-ai</a></p>
 </div>
