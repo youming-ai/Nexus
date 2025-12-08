@@ -1,15 +1,16 @@
-import type { FC } from "react";
+import type { LucideIcon } from "lucide-react"
+import type { FC } from "react"
 
-import { Code2, Zap, Folder, Settings } from "lucide-react";
+import { Code2, Folder, Settings, Zap } from "lucide-react"
 
 type FeatureItemProps = {
-  icon: any;
-  title: string;
-  description: string;
-};
+  icon: LucideIcon
+  title: string
+  description: string
+}
 
 const FeatureItem: FC<FeatureItemProps> = (props) => {
-  const { icon: Icon, title, description } = props;
+  const { icon: Icon, title, description } = props
 
   return (
     <div className="flex items-start space-x-3">
@@ -19,10 +20,10 @@ const FeatureItem: FC<FeatureItemProps> = (props) => {
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export type DevExperienceSectionProps = {};
+export type DevExperienceSectionProps = Record<string, never>
 
 export const DevExperienceSection: FC<DevExperienceSectionProps> = () => {
   const features = [
@@ -56,15 +57,13 @@ export const DevExperienceSection: FC<DevExperienceSectionProps> = () => {
       title: "Shared Packages",
       description: "Reusable UI, database, and configuration packages",
     },
-  ];
+  ]
 
   return (
     <section className="py-20 bg-muted/50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">
-            Developer Experience First
-          </h2>
+          <h2 className="text-3xl font-bold mb-4">Developer Experience First</h2>
           <p className="text-muted-foreground">
             Optimized for productivity with modern tooling and best practices
           </p>
@@ -79,9 +78,7 @@ export const DevExperienceSection: FC<DevExperienceSectionProps> = () => {
             </div>
           </div>
           <div className="bg-slate-900 dark:bg-slate-950 rounded-lg p-6 text-green-400 font-mono text-sm border dark:border-slate-800">
-            <div className="mb-4 text-slate-400 dark:text-slate-500">
-              Project Structure
-            </div>
+            <div className="mb-4 text-slate-400 dark:text-slate-500">Project Structure</div>
             <div className="space-y-1">
               <div className="text-slate-400 dark:text-slate-500">
                 <span className="text-purple-400">
@@ -93,7 +90,6 @@ export const DevExperienceSection: FC<DevExperienceSectionProps> = () => {
               <div className="ml-4">📁 web/</div>
               <div>📁 packages/</div>
               <div className="ml-4">📁 db/</div>
-              <div className="ml-4">📁 eslint-config/</div>
               <div className="ml-4">📁 typescript-config/</div>
               <div className="ml-4">📁 ui/</div>
             </div>
@@ -101,5 +97,5 @@ export const DevExperienceSection: FC<DevExperienceSectionProps> = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}

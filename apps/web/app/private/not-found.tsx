@@ -1,6 +1,6 @@
-import { Button } from "@workspace/ui/components/button";
-import { Home } from "lucide-react";
-import Link from "next/link";
+import { Button } from "@workspace/ui/components/button"
+import { Home } from "lucide-react"
+import Link from "next/link"
 
 export default function NotFoundPage() {
   return (
@@ -19,5 +19,5 @@ export default function NotFoundPage() {
         </Button>
       </div>
     </div>
-  );
+  )
 }

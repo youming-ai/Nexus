@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod/v4"
 
 export const SignupFormSchema = z
   .object({
@@ -19,14 +19,8 @@ export const SignupFormSchema = z
       .min(2, { message: "Last name must be at least 2 characters" })
       .trim()
       .optional(),
-    password: z
-      .string()
-      .min(8, { message: "Be at least 8 characters long" })
-      .trim(),
-    confirmPassword: z
-      .string()
-      .min(8, { message: "Be at least 8 characters long" })
-      .trim(),
+    password: z.string().min(8, { message: "Be at least 8 characters long" }).trim(),
+    confirmPassword: z.string().min(8, { message: "Be at least 8 characters long" }).trim(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -35,36 +29,36 @@ export const SignupFormSchema = z
   .refine(
     (data) => {
       // At least one name field must be provided
-      return data.fullName || (data.firstName && data.lastName);
+      return data.fullName || (data.firstName && data.lastName)
     },
     {
       message: "Please provide either full name or both first and last name",
       path: ["fullName"],
-    },
-  );
+    }
+  )
 
 export type SignupFormState =
   | {
       errors?: {
         email?: {
-          errors: string[];
-        };
+          errors: string[]
+        }
         fullName?: {
-          errors: string[];
-        };
+          errors: string[]
+        }
         firstName?: {
-          errors: string[];
-        };
+          errors: string[]
+        }
         lastName?: {
-          errors: string[];
-        };
+          errors: string[]
+        }
         password?: {
-          errors: string[];
-        };
+          errors: string[]
+        }
         confirmPassword?: {
-          errors: string[];
-        };
-      };
-      message?: string;
+          errors: string[]
+        }
+      }
+      message?: string
     }
-  | undefined;
+  | undefined

@@ -4,8 +4,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
-import { Skeleton } from "@workspace/ui/components/skeleton";
+} from "@workspace/ui/components/card"
+import { Skeleton } from "@workspace/ui/components/skeleton"
 
 export default function ForgotPasswordLoadingPage() {
   return (
@@ -13,8 +13,7 @@ export default function ForgotPasswordLoadingPage() {
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Forgot Password</CardTitle>
         <CardDescription>
-          Enter your email address and we'll send you a link to reset your
-          password
+          Enter your email address and we'll send you a link to reset your password
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -25,5 +24,5 @@ export default function ForgotPasswordLoadingPage() {
         <Skeleton className="h-10 w-full" />
       </CardContent>
     </Card>
-  );
+  )
 }

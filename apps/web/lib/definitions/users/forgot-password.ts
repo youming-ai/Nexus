@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod/v4"
 
 export const ForgotPasswordFormSchema = z.object({
   email: z
@@ -7,15 +7,15 @@ export const ForgotPasswordFormSchema = z.object({
       error: "Invalid email address",
     })
     .trim(),
-});
+})
 
 export type ForgotPasswordFormState =
   | {
       errors?: {
         email?: {
-          errors: string[];
-        };
-      };
-      message?: string;
+          errors: string[]
+        }
+      }
+      message?: string
     }
-  | undefined;
+  | undefined

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "next/link"
 
 export default function SignupNotFoundPage() {
   return (
@@ -11,5 +11,5 @@ export default function SignupNotFoundPage() {
         Return Home
       </Link>
     </div>
-  );
+  )
 }

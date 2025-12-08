@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod/v4"
 
 export const LoginFormSchema = z.object({
   email: z
@@ -7,22 +7,19 @@ export const LoginFormSchema = z.object({
       error: "Invalid email address",
     })
     .trim(),
-  password: z
-    .string()
-    .min(8, { message: "Be at least 8 characters long" })
-    .trim(),
-});
+  password: z.string().min(8, { message: "Be at least 8 characters long" }).trim(),
+})
 
 export type LoginFormState =
   | {
       errors?: {
         email?: {
-          errors: string[];
-        };
+          errors: string[]
+        }
         password?: {
-          errors: string[];
-        };
-      };
-      message?: string;
+          errors: string[]
+        }
+      }
+      message?: string
     }
-  | undefined;
+  | undefined

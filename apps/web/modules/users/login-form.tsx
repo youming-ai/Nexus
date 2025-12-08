@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import type { FC } from "react";
-import { useActionState } from "react";
-import Link from "next/link";
-import { loginAction } from "@/app/actions/auth/login";
+import { loginAction } from "@/app/actions/auth/login"
+import Link from "next/link"
+import type { FC } from "react"
+import { useActionState } from "react"
 
-export type LoginFormProps = {};
+export type LoginFormProps = Record<string, never>
 
 export const LoginForm: FC<LoginFormProps> = () => {
-  const [state, action, isPending] = useActionState(loginAction, undefined);
+  const [state, action, isPending] = useActionState(loginAction, undefined)
 
   return (
     <form className="w-full max-w-md p-8 space-y-6">
@@ -34,12 +34,11 @@ export const LoginForm: FC<LoginFormProps> = () => {
             required
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
-          {state?.errors?.email &&
-            state.errors.email.errors.map((error) => (
-              <p className="text-red-500" key={error} aria-live="polite">
-                {error}
-              </p>
-            ))}
+          {state?.errors?.email?.errors.map((error) => (
+            <p className="text-red-500" key={error} aria-live="polite">
+              {error}
+            </p>
+          ))}
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -49,10 +48,7 @@ export const LoginForm: FC<LoginFormProps> = () => {
             >
               Password
             </label>
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:underline"
-            >
+            <Link href="/forgot-password" className="text-sm text-primary hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -63,16 +59,16 @@ export const LoginForm: FC<LoginFormProps> = () => {
             required
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
-          {state?.errors?.password &&
-            state.errors.password.errors.map((error) => (
-              <p className="text-red-500" key={error} aria-live="polite">
-                {error}
-              </p>
-            ))}
+          {state?.errors?.password?.errors.map((error) => (
+            <p className="text-red-500" key={error} aria-live="polite">
+              {error}
+            </p>
+          ))}
         </div>
       </div>
       <div className="flex flex-col space-y-3">
         <button
+          type="submit"
           disabled={isPending}
           formAction={action}
           className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
@@ -94,5 +90,5 @@ export const LoginForm: FC<LoginFormProps> = () => {
         </p>
       )}
     </form>
-  );
-};
+  )
+}

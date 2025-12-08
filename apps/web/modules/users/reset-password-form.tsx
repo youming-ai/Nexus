@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import type { FC } from "react";
-import { useActionState } from "react";
+import { resetPasswordAction } from "@/app/actions/auth/reset-password"
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
@@ -9,18 +9,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
-import { Button } from "@workspace/ui/components/button";
-import Link from "next/link";
-import { resetPasswordAction } from "@/app/actions/auth/reset-password";
+} from "@workspace/ui/components/card"
+import Link from "next/link"
+import type { FC } from "react"
+import { useActionState } from "react"
 
-export type ResetPasswordFormProps = {};
+export type ResetPasswordFormProps = Record<string, never>
 
 export const ResetPasswordForm: FC<ResetPasswordFormProps> = () => {
-  const [state, action, isPending] = useActionState(
-    resetPasswordAction,
-    undefined,
-  );
+  const [state, action, isPending] = useActionState(resetPasswordAction, undefined)
 
   return (
     <Card className="w-full max-w-md">
@@ -45,12 +42,11 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = () => {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter your new password"
             />
-            {state?.errors?.password &&
-              state.errors.password.errors.map((error) => (
-                <p className="text-red-500" key={error} aria-live="polite">
-                  {error}
-                </p>
-              ))}
+            {state?.errors?.password?.errors.map((error) => (
+              <p className="text-red-500" key={error} aria-live="polite">
+                {error}
+              </p>
+            ))}
           </div>
           <div className="space-y-2">
             <label
@@ -67,21 +63,15 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = () => {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Confirm your new password"
             />
-            {state?.errors?.confirmPassword &&
-              state.errors.confirmPassword.errors.map((error) => (
-                <p className="text-red-500" key={error} aria-live="polite">
-                  {error}
-                </p>
-              ))}
+            {state?.errors?.confirmPassword?.errors.map((error) => (
+              <p className="text-red-500" key={error} aria-live="polite">
+                {error}
+              </p>
+            ))}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <Button
-            type="submit"
-            disabled={isPending}
-            className="w-full mt-4"
-            aria-busy={isPending}
-          >
+          <Button type="submit" disabled={isPending} className="w-full mt-4" aria-busy={isPending}>
             {isPending ? "Resetting..." : "Reset Password"}
           </Button>
           <Button variant="outline" asChild className="w-full">
@@ -90,13 +80,10 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = () => {
         </CardFooter>
       </form>
       {state?.message && (
-        <p
-          className="text-center text-sm text-red-500 px-6 pb-6"
-          aria-live="polite"
-        >
+        <p className="text-center text-sm text-red-500 px-6 pb-6" aria-live="polite">
           {state.message}
         </p>
       )}
     </Card>
-  );
-};
+  )
+}

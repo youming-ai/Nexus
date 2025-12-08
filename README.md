@@ -17,7 +17,7 @@
 
 ## 📋 Overview
 
-Nexus is a production-ready, full-stack monorepo starter kit that provides everything you need to build modern web applications. It combines the power of Next.js 15, Supabase authentication, Prisma ORM, and a beautiful UI powered by Tailwind CSS v4 and shadcn/ui.
+Nexus is a production-ready, full-stack monorepo starter kit that provides everything you need to build modern web applications. It combines the power of Next.js, Supabase authentication, Prisma ORM, and a beautiful UI powered by Tailwind CSS v4 and shadcn/ui.
 
 ### Key Highlights
 
@@ -27,7 +27,7 @@ Nexus is a production-ready, full-stack monorepo starter kit that provides every
 - 🗄️ **Type-safe Database** - Prisma ORM with PostgreSQL (Supabase)
 - 🌙 **Dark Mode** - Built-in theme switching
 - 🛡️ **Security First** - Row Level Security (RLS) policies configured
-- 🚀 **Production Ready** - TypeScript, ESLint, Prettier pre-configured
+- 🚀 **Production Ready** - TypeScript, Biome (linting & formatting) pre-configured
 
 ---
 
@@ -45,7 +45,7 @@ Nexus is a production-ready, full-stack monorepo starter kit that provides every
 - ✅ TypeScript throughout
 - ✅ Hot Module Replacement
 - ✅ Shared component library
-- ✅ Consistent code style (ESLint + Prettier)
+- ✅ Consistent code style (Biome)
 - ✅ Git hooks with Husky
 - ✅ Turborepo for fast builds
 
@@ -63,7 +63,7 @@ Nexus is a production-ready, full-stack monorepo starter kit that provides every
 
 | Category | Technology |
 |----------|------------|
-| **Framework** | [Next.js 15](https://nextjs.org/) (App Router) |
+| **Framework** | [Next.js](https://nextjs.org/) (App Router) |
 | **Language** | [TypeScript](https://www.typescriptlang.org/) |
 | **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) |
 | **UI Library** | [shadcn/ui](https://ui.shadcn.com/) |
@@ -185,7 +185,6 @@ nexus/
 │   │   └── supabase/          # Supabase SQL scripts
 │   ├── ui/                    # Shared UI component library
 │   │   └── src/components/    # Reusable components
-│   ├── eslint-config/         # Shared ESLint configuration
 │   └── typescript-config/     # Shared TypeScript configuration
 ├── turbo.json                 # Turborepo configuration
 └── pnpm-workspace.yaml        # pnpm workspace configuration
@@ -210,7 +209,7 @@ nexus/
 pnpm dev          # Start all packages in development mode
 pnpm build        # Build all packages
 pnpm lint         # Lint all packages
-pnpm format       # Format code with Prettier
+pnpm format       # Format code with Biome
 
 # Database
 pnpm --filter @workspace/db db:generate  # Generate Prisma client
@@ -228,7 +227,7 @@ cd apps/web
 pnpm dev          # Start development server with Turbopack
 pnpm build        # Create production build
 pnpm start        # Start production server
-pnpm lint         # Run ESLint
+pnpm lint         # Run Biome linter
 pnpm typecheck    # Run TypeScript compiler check
 ```
 

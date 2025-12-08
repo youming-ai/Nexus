@@ -2,14 +2,7 @@
   "name": "nexus",
   "version": "0.5.3",
   "private": true,
-  "keywords": [
-    "turbo",
-    "nextjs",
-    "tailwind css",
-    "shadcn/ui",
-    "prisma",
-    "supabase"
-  ],
+  "keywords": ["turbo", "nextjs", "tailwind css", "shadcn/ui", "prisma", "supabase"],
   "author": {
     "name": "youming-ai",
     "email": "um1ng@pm.me",
@@ -19,19 +12,19 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
     "prepare": "husky"
   },
   "devDependencies": {
-    "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "eslint": "^9.37.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.4",
-    "prettier": "^3.6.2",
     "turbo": "^2.5.8",
-    "typescript": "5.8.3"
+    "typescript": "^5.9.3",
+    "@biomejs/biome": "1.9.4"
   },
   "packageManager": "pnpm@10.12.2",
   "engines": {

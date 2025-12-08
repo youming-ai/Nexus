@@ -1,11 +1,13 @@
-import { LandingHome } from "@/modules/landing/home-section";
-import { createClient } from "@/utils/supabase/server";
+import { LandingHome } from "@/modules/landing/home-section"
+import { createClient } from "@/utils/supabase/server"
+
+export const dynamic = "force-dynamic"
 
 export default async function Home() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.getUser()
 
-  const isAuth = Boolean(data.user && !error);
+  const isAuth = Boolean(data.user && !error)
 
-  return <LandingHome isAuth={isAuth} />;
+  return <LandingHome isAuth={isAuth} />
 }

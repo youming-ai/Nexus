@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
@@ -8,27 +8,25 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
-import { Button } from "@workspace/ui/components/button";
+} from "@workspace/ui/components/card"
+import { useEffect } from "react"
 
 export default function ResetPasswordErrorPage({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+  error: Error & { digest?: string }
+  reset: () => void
 }) {
   useEffect(() => {
-    console.error(error);
-  }, [error]);
+    console.error(error)
+  }, [error])
 
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Something went wrong!</CardTitle>
-        <CardDescription>
-          An error occurred while resetting your password
-        </CardDescription>
+        <CardDescription>An error occurred while resetting your password</CardDescription>
       </CardHeader>
       <CardContent className="text-center">
         <p className="text-muted-foreground mb-4">
@@ -41,5 +39,5 @@ export default function ResetPasswordErrorPage({
         </Button>
       </CardFooter>
     </Card>
-  );
+  )
 }

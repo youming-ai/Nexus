@@ -1,22 +1,24 @@
-import type { FC } from "react";
-import { Database, Lock, Palette, Zap, CheckCircle } from "lucide-react";
+import type { LucideIcon } from "lucide-react"
+import type { FC } from "react"
+
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
+} from "@workspace/ui/components/card"
+import { CheckCircle, Database, Lock, Palette, Zap } from "lucide-react"
 
 type FeatureCardProps = {
-  icon: any;
-  title: string;
-  description: string;
-  features: string[];
-};
+  icon: LucideIcon
+  title: string
+  description: string
+  features: string[]
+}
 
 const FeatureCard: FC<FeatureCardProps> = (props) => {
-  const { icon: Icon, title, description, features } = props;
+  const { icon: Icon, title, description, features } = props
 
   return (
     <Card>
@@ -36,10 +38,10 @@ const FeatureCard: FC<FeatureCardProps> = (props) => {
         </ul>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export type FeaturesSectionProps = {};
+export type FeaturesSectionProps = Record<string, never>
 
 export const FeaturesSection: FC<FeaturesSectionProps> = () => {
   const features = [
@@ -48,11 +50,7 @@ export const FeaturesSection: FC<FeaturesSectionProps> = () => {
       icon: Lock,
       title: "Authentication",
       description: "Email login & social auth with Supabase Auth",
-      features: [
-        "Email/Password login",
-        "Social providers",
-        "Protected routes",
-      ],
+      features: ["Email/Password login", "Social providers", "Protected routes"],
     },
     {
       key: "database",
@@ -75,18 +73,15 @@ export const FeaturesSection: FC<FeaturesSectionProps> = () => {
       description: "Beautiful components with shadcn/ui",
       features: ["40+ components", "Dark mode support", "Fully customizable"],
     },
-  ];
+  ]
 
   return (
     <section id="features" className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">
-            Everything You Need to Start Building
-          </h2>
+          <h2 className="text-3xl font-bold mb-4">Everything You Need to Start Building</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Skip the setup and focus on building your product with these
-            pre-configured features
+            Skip the setup and focus on building your product with these pre-configured features
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -96,5 +91,5 @@ export const FeaturesSection: FC<FeaturesSectionProps> = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}

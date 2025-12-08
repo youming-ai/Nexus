@@ -1,4 +1,4 @@
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
@@ -6,9 +6,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
-import { CheckCircle2, Mail } from "lucide-react";
-import Link from "next/link";
+} from "@workspace/ui/components/card"
+import { CheckCircle2, Mail } from "lucide-react"
+import Link from "next/link"
 
 export default function SignupSuccessPage() {
   return (
@@ -26,9 +26,8 @@ export default function SignupSuccessPage() {
             <Mail className="h-12 w-12 text-muted-foreground" />
           </div>
           <p className="text-muted-foreground mb-4">
-            Please check your email inbox and click the verification link to
-            complete your registration. If you don't see the email, please check
-            your spam folder.
+            Please check your email inbox and click the verification link to complete your
+            registration. If you don't see the email, please check your spam folder.
           </p>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
@@ -41,5 +40,5 @@ export default function SignupSuccessPage() {
         </CardFooter>
       </Card>
     </div>
-  );
+  )
 }

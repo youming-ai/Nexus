@@ -1,21 +1,17 @@
-import { getUser } from "@/lib/dal/user";
-import type { ReactNode } from "react";
-import { notFound } from "next/navigation";
+import { getUser } from "@/lib/dal/user"
+import { notFound } from "next/navigation"
+import type { ReactNode } from "react"
 
 export default async function PrivateLayout({
   children,
 }: Readonly<{
-  children: ReactNode;
+  children: ReactNode
 }>) {
-  const user = await getUser();
+  const user = await getUser()
 
   if (!user) {
-    notFound();
+    notFound()
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      {children}
-    </div>
-  );
+  return <div className="min-h-screen flex items-center justify-center">{children}</div>
 }

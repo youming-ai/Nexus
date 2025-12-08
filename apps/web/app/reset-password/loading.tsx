@@ -4,8 +4,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card";
-import { Skeleton } from "@workspace/ui/components/skeleton";
+} from "@workspace/ui/components/card"
+import { Skeleton } from "@workspace/ui/components/skeleton"
 
 export default function ResetPasswordLoadingPage() {
   return (
@@ -26,5 +26,5 @@ export default function ResetPasswordLoadingPage() {
         <Skeleton className="h-10 w-full" />
       </CardContent>
     </Card>
-  );
+  )
 }

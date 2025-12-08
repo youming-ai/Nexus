@@ -1,19 +1,19 @@
-"use client";
+"use client"
 
-import type { FC } from "react";
+import type { FC } from "react"
 
-import Image from "next/image";
+import Image from "next/image"
 
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils"
 
 type TechStackItemProps = {
-  iconSrc: string;
-  label: string;
-  iconSrcDark?: string;
-  hasBorder?: boolean;
-  hasBackground?: boolean;
-  className?: string;
-};
+  iconSrc: string
+  label: string
+  iconSrcDark?: string
+  hasBorder?: boolean
+  hasBackground?: boolean
+  className?: string
+}
 
 const TechStackItem: FC<TechStackItemProps> = (props) => {
   const {
@@ -23,7 +23,7 @@ const TechStackItem: FC<TechStackItemProps> = (props) => {
     hasBorder = false,
     hasBackground = false,
     className = "",
-  } = props;
+  } = props
 
   return (
     <div className="flex flex-col items-center space-y-2">
@@ -52,10 +52,10 @@ const TechStackItem: FC<TechStackItemProps> = (props) => {
       </div>
       <span className="text-sm font-medium">{label}</span>
     </div>
-  );
-};
+  )
+}
 
-export type TechStackSectionProps = {};
+export type TechStackSectionProps = Record<string, never>
 
 export const TechStackSection: FC<TechStackSectionProps> = () => {
   const techStackItems = [
@@ -63,7 +63,7 @@ export const TechStackSection: FC<TechStackSectionProps> = () => {
       key: "nextjs",
       iconSrc: "/images/light/nextjs-icon.svg",
       iconSrcDark: "/images/dark/nextjs-icon.svg",
-      label: "Next.js 15",
+      label: "Next.js",
       hasBackground: true,
     },
     {
@@ -87,15 +87,13 @@ export const TechStackSection: FC<TechStackSectionProps> = () => {
       iconSrc: "/images/supabase-logo-icon.svg",
       label: "Supabase",
     },
-  ];
+  ]
 
   return (
     <section id="tech-stack" className="py-16 bg-muted/50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">
-            Built with Modern Technologies
-          </h2>
+          <h2 className="text-3xl font-bold mb-4">Built with Modern Technologies</h2>
           <p className="text-muted-foreground">
             Carefully selected tools for the best developer experience
           </p>
@@ -107,5 +105,5 @@ export const TechStackSection: FC<TechStackSectionProps> = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}

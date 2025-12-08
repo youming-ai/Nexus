@@ -1,22 +1,24 @@
-import { redirect } from "next/navigation";
+import { redirect } from "next/navigation"
 
-import { SignOutButton } from "@/modules/users/signout-button";
-import { verifySession } from "@/lib/dal/verifySession";
-import { getProfileDTO } from "@/lib/dto/user";
+import { verifySession } from "@/lib/dal/verifySession"
+import { getProfileDTO } from "@/lib/dto/user"
+import { SignOutButton } from "@/modules/users/signout-button"
+
+export const dynamic = "force-dynamic"
 
 export default async function PrivatePage() {
-  const session = await verifySession();
+  const session = await verifySession()
   if (!session || !session.user) {
-    redirect("/login");
+    redirect("/login")
   }
 
   if (!session.user.email) {
-    return <p>Oops, there's no user email!</p>;
+    return <p>Oops, there's no user email!</p>
   }
 
-  const data = await getProfileDTO(session.user?.email);
+  const data = await getProfileDTO(session.user?.email)
 
-  const { username } = data || {};
+  const { username } = data || {}
 
   return (
     <div>
@@ -24,5 +26,5 @@ export default async function PrivatePage() {
 
       <SignOutButton />
     </div>
-  );
+  )
 }

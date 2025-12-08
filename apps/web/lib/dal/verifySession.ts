@@ -1,16 +1,16 @@
-import "server-only";
+import "server-only"
 
-import { cache } from "react";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server"
+import { redirect } from "next/navigation"
+import { cache } from "react"
 
 export const verifySession = cache(async () => {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.getUser()
 
   if (error || !data.user?.id) {
-    redirect("/login");
+    redirect("/login")
   }
 
-  return { isAuth: true, user: data.user };
-});
+  return { isAuth: true, user: data.user }
+})

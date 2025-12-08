@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata } from "next"
 
 const siteConfig = {
-  name: "Nexus - Next.js 15 Starter Kit",
+  name: "Nexus - Next.js Starter Kit",
   description:
-    "Nexus is a modern monorepo starter kit featuring Next.js 15, Turborepo, shadcn/ui, Tailwind CSS v4, Supabase, and Prisma - perfect for building scalable full-stack applications with efficient monorepo architecture",
+    "Nexus is a modern monorepo starter kit featuring Next.js, Turborepo, shadcn/ui, Tailwind CSS v4, Supabase, and Prisma - perfect for building scalable full-stack applications with efficient monorepo architecture",
   keywords: [
     "nexus",
     "nextjs",
-    "next.js 15",
+    "next.js",
     "turborepo",
     "monorepo",
     "shadcn",
@@ -22,7 +22,7 @@ const siteConfig = {
     "workspace",
   ],
   author: "youming-ai",
-};
+}
 
 export const metadata: Metadata = {
   title: siteConfig.name,
@@ -41,4 +41,4 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
   },
-};
+}

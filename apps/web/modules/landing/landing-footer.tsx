@@ -1,26 +1,26 @@
-import type { FC } from "react";
+import type { FC } from "react"
 
-import { Code2 } from "lucide-react";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@workspace/ui/lib/utils"
+import { Code2 } from "lucide-react"
 
-import Link from "next/link";
-import Image from "next/image";
+import Image from "next/image"
+import Link from "next/link"
 
-import { APP_CONFIG } from "@/config/app";
+import { APP_CONFIG } from "@/config/app"
 
 type FooterLink = {
-  href: string;
-  label: string;
-  imgSrc?: string;
-};
+  href: string
+  label: string
+  imgSrc?: string
+}
 
 type FooterSectionProps = {
-  title: string;
-  links: FooterLink[];
-};
+  title: string
+  links: FooterLink[]
+}
 
 const FooterSection: FC<FooterSectionProps> = (props) => {
-  const { title, links } = props;
+  const { title, links } = props
 
   return (
     <div>
@@ -33,7 +33,7 @@ const FooterSection: FC<FooterSectionProps> = (props) => {
               target="_blank"
               className={cn(
                 "hover:text-primary",
-                imgSrc ? "flex flex-row gap-2" : "transition-colors",
+                imgSrc ? "flex flex-row gap-2" : "transition-colors"
               )}
             >
               {imgSrc && (
@@ -51,10 +51,10 @@ const FooterSection: FC<FooterSectionProps> = (props) => {
         ))}
       </ul>
     </div>
-  );
-};
+  )
+}
 
-export type LandingFooterProps = {};
+export type LandingFooterProps = Record<string, never>
 
 export const LandingFooter: FC<LandingFooterProps> = () => {
   const footerSections = [
@@ -93,7 +93,7 @@ export const LandingFooter: FC<LandingFooterProps> = () => {
         { href: "#", label: "Terms of Service" },
       ],
     },
-  ];
+  ]
 
   return (
     <footer className="border-t py-12">
@@ -105,16 +105,11 @@ export const LandingFooter: FC<LandingFooterProps> = () => {
               <span className="font-bold text-xl">Nexus</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              A modern fullstack starter kit for building production-ready
-              applications.
+              A modern fullstack starter kit for building production-ready applications.
             </p>
           </div>
           {footerSections.map((section) => (
-            <FooterSection
-              key={section.id}
-              title={section.title}
-              links={section.links}
-            />
+            <FooterSection key={section.id} title={section.title} links={section.links} />
           ))}
         </div>
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
@@ -122,5 +117,5 @@ export const LandingFooter: FC<LandingFooterProps> = () => {
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}

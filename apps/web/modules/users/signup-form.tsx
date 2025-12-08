@@ -1,22 +1,20 @@
-"use client";
+"use client"
 
-import type { FC } from "react";
-import { useActionState } from "react";
+import type { FC } from "react"
+import { useActionState } from "react"
 
-import { signupAction } from "@/app/actions/auth/signup";
+import { signupAction } from "@/app/actions/auth/signup"
 
-export type SignupFormProps = {};
+export type SignupFormProps = Record<string, never>
 
 export const SignupForm: FC<SignupFormProps> = () => {
-  const [state, action, isPending] = useActionState(signupAction, undefined);
+  const [state, action, isPending] = useActionState(signupAction, undefined)
 
   return (
     <form className="w-full max-w-md p-8 space-y-6">
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold tracking-tight">Create an account</h1>
-        <p className="text-sm text-muted-foreground">
-          Enter your details to create your account
-        </p>
+        <p className="text-sm text-muted-foreground">Enter your details to create your account</p>
       </div>
       <div className="space-y-4">
         <div className="space-y-2">
@@ -34,12 +32,11 @@ export const SignupForm: FC<SignupFormProps> = () => {
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Enter your full name"
           />
-          {state?.errors?.fullName &&
-            state.errors.fullName.errors.map((error) => (
-              <p className="text-red-500" key={error} aria-live="polite">
-                {error}
-              </p>
-            ))}
+          {state?.errors?.fullName?.errors.map((error) => (
+            <p className="text-red-500" key={error} aria-live="polite">
+              {error}
+            </p>
+          ))}
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
@@ -57,12 +54,11 @@ export const SignupForm: FC<SignupFormProps> = () => {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter first name"
             />
-            {state?.errors?.firstName &&
-              state.errors.firstName.errors.map((error) => (
-                <p className="text-red-500" key={error} aria-live="polite">
-                  {error}
-                </p>
-              ))}
+            {state?.errors?.firstName?.errors.map((error) => (
+              <p className="text-red-500" key={error} aria-live="polite">
+                {error}
+              </p>
+            ))}
           </div>
           <div className="space-y-2">
             <label
@@ -79,12 +75,11 @@ export const SignupForm: FC<SignupFormProps> = () => {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter last name"
             />
-            {state?.errors?.lastName &&
-              state.errors.lastName.errors.map((error) => (
-                <p className="text-red-500" key={error} aria-live="polite">
-                  {error}
-                </p>
-              ))}
+            {state?.errors?.lastName?.errors.map((error) => (
+              <p className="text-red-500" key={error} aria-live="polite">
+                {error}
+              </p>
+            ))}
           </div>
         </div>
         <div className="space-y-2">
@@ -103,12 +98,11 @@ export const SignupForm: FC<SignupFormProps> = () => {
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Enter your email"
           />
-          {state?.errors?.email &&
-            state.errors.email.errors.map((error) => (
-              <p className="text-red-500" key={error} aria-live="polite">
-                {error}
-              </p>
-            ))}
+          {state?.errors?.email?.errors.map((error) => (
+            <p className="text-red-500" key={error} aria-live="polite">
+              {error}
+            </p>
+          ))}
         </div>
         <div className="space-y-2">
           <label
@@ -125,12 +119,11 @@ export const SignupForm: FC<SignupFormProps> = () => {
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Enter your password"
           />
-          {state?.errors?.password &&
-            state.errors.password.errors.map((error) => (
-              <p className="text-red-500" key={error} aria-live="polite">
-                {error}
-              </p>
-            ))}
+          {state?.errors?.password?.errors.map((error) => (
+            <p className="text-red-500" key={error} aria-live="polite">
+              {error}
+            </p>
+          ))}
         </div>
         <div className="space-y-2">
           <label
@@ -147,16 +140,16 @@ export const SignupForm: FC<SignupFormProps> = () => {
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Confirm your password"
           />
-          {state?.errors?.confirmPassword &&
-            state.errors.confirmPassword.errors.map((error) => (
-              <p className="text-red-500" key={error} aria-live="polite">
-                {error}
-              </p>
-            ))}
+          {state?.errors?.confirmPassword?.errors.map((error) => (
+            <p className="text-red-500" key={error} aria-live="polite">
+              {error}
+            </p>
+          ))}
         </div>
       </div>
       <div className="flex flex-col space-y-3">
         <button
+          type="submit"
           disabled={isPending}
           formAction={action}
           className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
@@ -178,5 +171,5 @@ export const SignupForm: FC<SignupFormProps> = () => {
         </p>
       )}
     </form>
-  );
-};
+  )
+}
