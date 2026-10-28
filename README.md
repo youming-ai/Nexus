@@ -37,7 +37,7 @@ Nexus is a production-ready, full-stack monorepo starter kit that provides every
 - ✅ Email/password authentication
 - ✅ Forgot password flow
 - ✅ Email confirmation
-- ✅ Protected routes with middleware
+- ✅ Protected routes with Next.js proxy (formerly middleware)
 - ✅ Session management
 - ✅ Supabase Row Level Security (RLS)
 
@@ -80,8 +80,8 @@ Nexus is a production-ready, full-stack monorepo starter kit that provides every
 
 ### Prerequisites
 
-- **Node.js** >= 22.16.0
-- **pnpm** >= 10.12.2 ([install guide](https://pnpm.io/installation))
+- **Node.js** >= 24 (see `.nvmrc`)
+- **pnpm** >= 10.34.9 ([install guide](https://pnpm.io/installation))
 - **Supabase** account ([sign up](https://supabase.com/))
 - **Git**
 
@@ -132,7 +132,9 @@ Add your environment variables:
 ```env
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+# Legacy anon key is still supported as a fallback:
+# NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 # Database (for Prisma)
 DATABASE_URL=your_supabase_database_url
@@ -239,10 +241,10 @@ Nexus implements a complete authentication system:
 
 1. **Sign Up** → Email confirmation → Redirect to login
 2. **Sign In** → Session created → Redirect to dashboard
-3. **Protected Routes** → Middleware checks → Access granted/denied
+3. **Protected Routes** → Proxy checks → Access granted/denied
 4. **Password Reset** → Email sent → Reset form → Success
 
-The authentication is handled by Supabase Auth with custom middleware for session management.
+The authentication is handled by Supabase Auth with a Next.js proxy (`apps/web/proxy.ts`) for session management.
 
 ---
 
@@ -257,7 +259,7 @@ The authentication is handled by Supabase Auth with custom middleware for sessio
 3. Configure environment variables:
    ```
    NEXT_PUBLIC_SUPABASE_URL
-   NEXT_PUBLIC_SUPABASE_ANON_KEY
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
    DATABASE_URL
    DIRECT_URL
    ```
