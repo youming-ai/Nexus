@@ -3,8 +3,9 @@ import type { FC } from "react"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 
-import { Github, Zap } from "lucide-react"
+import { Zap } from "lucide-react"
 
+import { GithubIcon } from "@/components/icons/github-icon"
 import { APP_CONFIG } from "@/config/app"
 import Link from "next/link"
 
@@ -29,7 +30,7 @@ export const HeroSection: FC<HeroSectionProps> = () => {
             <Link href="/login">Get Started</Link>
           </Button>
           <Button variant="outline" size="lg" className="text-lg px-8">
-            <Github className="h-4 w-4 mr-2" />
+            <GithubIcon className="h-4 w-4 mr-2" />
             <Link href={APP_CONFIG.GITHUB_REPO_URL} target="_blank">
               View on GitHub
             </Link>
