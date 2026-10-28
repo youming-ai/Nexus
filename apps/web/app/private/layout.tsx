@@ -1,6 +1,6 @@
-import { getUser } from "@/lib/dal/user"
 import { notFound } from "next/navigation"
 import type { ReactNode } from "react"
+import { getUser } from "@/lib/dal/user"
 
 export default async function PrivateLayout({
   children,

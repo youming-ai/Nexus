@@ -1,10 +1,9 @@
 "use client"
 
-import type { FC } from "react"
+import { cn } from "@workspace/ui/lib/utils"
 
 import Image from "next/image"
-
-import { cn } from "@workspace/ui/lib/utils"
+import type { FC } from "react"
 
 type TechStackItemProps = {
   iconSrc: string

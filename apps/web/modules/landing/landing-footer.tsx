@@ -1,10 +1,8 @@
-import type { FC } from "react"
-
 import { cn } from "@workspace/ui/lib/utils"
 import { Code2 } from "lucide-react"
-
 import Image from "next/image"
 import Link from "next/link"
+import type { FC } from "react"
 
 import { APP_CONFIG } from "@/config/app"
 

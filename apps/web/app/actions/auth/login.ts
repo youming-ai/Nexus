@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-import { z } from "zod/v4"
+import { z } from "zod"
 
 import type { LoginFormState } from "@/lib/definitions/users/login"
 import { LoginFormSchema } from "@/lib/definitions/users/login"

@@ -1,17 +1,13 @@
 import { createServerClient } from "@supabase/ssr"
 import { type NextRequest, NextResponse } from "next/server"
+import { getSupabaseEnv } from "@/utils/supabase/env"
 
 // 1. Specify protected and public routes
 const protectedRoutes = ["/dashboard", "/private"]
 const publicRoutes = ["/login", "/signup", "/"]
 
 export async function updateSession(request: NextRequest) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase environment variables")
-  }
+  const { supabaseUrl, supabaseKey } = getSupabaseEnv()
 
   let supabaseResponse = NextResponse.next({
     request,
@@ -19,10 +15,12 @@ export async function updateSession(request: NextRequest) {
 
   // 2. Check if the current route is protected or public
   const path = request.nextUrl.pathname
-  const isProtectedRoute = protectedRoutes.includes(path)
+  const isProtectedRoute = protectedRoutes.some(
+    (route) => path === route || path.startsWith(`${route}/`)
+  )
   const _isPublicRoute = publicRoutes.includes(path)
 
-  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll()

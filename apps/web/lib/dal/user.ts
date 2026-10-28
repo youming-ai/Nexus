@@ -1,8 +1,8 @@
 import "server-only"
+import { cache } from "react"
 import { verifySession } from "@/lib/dal/verifySession"
 import type { UsersType } from "@/types/model"
 import { createClient } from "@/utils/supabase/server"
-import { cache } from "react"
 
 export const getUser = cache(async (userId?: string) => {
   const session = await verifySession()

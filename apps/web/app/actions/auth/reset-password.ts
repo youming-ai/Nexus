@@ -1,10 +1,10 @@
 "use server"
 
+import { redirect } from "next/navigation"
+import { z } from "zod"
 import type { ResetPasswordFormState } from "@/lib/definitions/users/reset-password"
 import { ResetPasswordFormSchema } from "@/lib/definitions/users/reset-password"
 import { createClient } from "@/utils/supabase/server"
-import { redirect } from "next/navigation"
-import { z } from "zod/v4"
 
 export async function resetPasswordAction(_state: ResetPasswordFormState, formData: FormData) {
   // Validate form fields

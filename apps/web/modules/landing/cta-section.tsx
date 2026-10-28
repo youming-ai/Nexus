@@ -1,8 +1,7 @@
-import type { FC } from "react"
-
 import { Button } from "@workspace/ui/components/button"
 import { FileText } from "lucide-react"
 import Link from "next/link"
+import type { FC } from "react"
 
 export type CtaSectionProps = Record<string, never>
 

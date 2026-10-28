@@ -1,13 +1,9 @@
-import type { Database } from "@/types/model"
 import { createBrowserClient } from "@supabase/ssr"
+import type { Database } from "@/types/model"
+import { getSupabaseEnv } from "@/utils/supabase/env"
 
 export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const { supabaseUrl, supabaseKey } = getSupabaseEnv()
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase environment variables")
-  }
-
-  return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey)
+  return createBrowserClient<Database>(supabaseUrl, supabaseKey)
 }

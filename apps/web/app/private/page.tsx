@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic"
 
 export default async function PrivatePage() {
   const session = await verifySession()
-  if (!session || !session.user) {
+  if (!session?.user) {
     redirect("/login")
   }
 

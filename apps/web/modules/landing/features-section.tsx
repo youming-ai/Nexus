@@ -1,6 +1,3 @@
-import type { LucideIcon } from "lucide-react"
-import type { FC } from "react"
-
 import {
   Card,
   CardContent,
@@ -8,7 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
+import type { LucideIcon } from "lucide-react"
 import { CheckCircle, Database, Lock, Palette, Zap } from "lucide-react"
+import type { FC } from "react"
 
 type FeatureCardProps = {
   icon: LucideIcon

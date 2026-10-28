@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-import { z } from "zod/v4"
+import { z } from "zod"
 
 import { createUser, deleteRegisteredUser } from "@/lib/dal/user"
 import type { SignupFormState } from "@/lib/definitions/users/signup"
@@ -39,7 +39,7 @@ export async function signupAction(_state: SignupFormState, formData: FormData) 
     return { message: error?.message }
   }
 
-  if (!registeredUser || !registeredUser.user?.id) {
+  if (!registeredUser?.user?.id) {
     return { message: "User registered failed" }
   }
 

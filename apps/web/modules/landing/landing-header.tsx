@@ -1,9 +1,8 @@
-import type { FC } from "react"
+import { Button } from "@workspace/ui/components/button"
 
 import { Code2 } from "lucide-react"
 import Link from "next/link"
-
-import { Button } from "@workspace/ui/components/button"
+import type { FC } from "react"
 
 import { ModeToggle } from "@/components/mode-toggle"
 

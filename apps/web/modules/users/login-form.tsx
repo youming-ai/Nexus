@@ -1,9 +1,9 @@
 "use client"
 
-import { loginAction } from "@/app/actions/auth/login"
 import Link from "next/link"
 import type { FC } from "react"
 import { useActionState } from "react"
+import { loginAction } from "@/app/actions/auth/login"
 
 export type LoginFormProps = Record<string, never>
 

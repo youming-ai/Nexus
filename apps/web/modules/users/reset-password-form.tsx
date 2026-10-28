@@ -1,6 +1,5 @@
 "use client"
 
-import { resetPasswordAction } from "@/app/actions/auth/reset-password"
 import { Button } from "@workspace/ui/components/button"
 import {
   Card,
@@ -13,6 +12,7 @@ import {
 import Link from "next/link"
 import type { FC } from "react"
 import { useActionState } from "react"
+import { resetPasswordAction } from "@/app/actions/auth/reset-password"
 
 export type ResetPasswordFormProps = Record<string, never>
 

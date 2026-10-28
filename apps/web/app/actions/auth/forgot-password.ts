@@ -1,9 +1,9 @@
 "use server"
 
+import { z } from "zod"
 import type { ForgotPasswordFormState } from "@/lib/definitions/users/forgot-password"
 import { ForgotPasswordFormSchema } from "@/lib/definitions/users/forgot-password"
 import { createClient } from "@/utils/supabase/server"
-import { z } from "zod/v4"
 
 export async function forgotPasswordAction(_state: ForgotPasswordFormState, formData: FormData) {
   // Validate form fields

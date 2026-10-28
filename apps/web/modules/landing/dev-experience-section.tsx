@@ -1,7 +1,6 @@
 import type { LucideIcon } from "lucide-react"
-import type { FC } from "react"
-
 import { Code2, Folder, Settings, Zap } from "lucide-react"
+import type { FC } from "react"
 
 type FeatureItemProps = {
   icon: LucideIcon
