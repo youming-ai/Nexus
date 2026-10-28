@@ -1,8 +1,6 @@
-import type { FC } from "react"
-
-import { useFormStatus } from "react-dom"
-
 import { Button } from "@workspace/ui/components/button"
+import type { FC } from "react"
+import { useFormStatus } from "react-dom"
 
 export type SubmitButtonProps = {
   pendingText: string

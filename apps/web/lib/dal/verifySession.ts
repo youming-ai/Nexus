@@ -1,8 +1,8 @@
 import "server-only"
 
-import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import { cache } from "react"
+import { createClient } from "@/utils/supabase/server"
 
 export const verifySession = cache(async () => {
   const supabase = await createClient()

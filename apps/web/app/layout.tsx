@@ -1,8 +1,7 @@
+import { Analytics } from "@workspace/ui/components/analytics"
 import { Geist, Geist_Mono } from "next/font/google"
-
 import { ThemeProvider } from "@/components/theme-provider"
 import { metadata } from "@/config/metadata"
-import { Analytics } from "@workspace/ui/components/analytics"
 
 import "@workspace/ui/globals.css"
 

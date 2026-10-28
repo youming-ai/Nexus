@@ -1,6 +1,5 @@
 "use client"
 
-import { forgotPasswordAction } from "@/app/actions/auth/forgot-password"
 import { Button } from "@workspace/ui/components/button"
 import {
   Card,
@@ -12,6 +11,7 @@ import {
 } from "@workspace/ui/components/card"
 import Link from "next/link"
 import { useActionState } from "react"
+import { forgotPasswordAction } from "@/app/actions/auth/forgot-password"
 
 export const ForgotPasswordForm = () => {
   const [state, action, isPending] = useActionState(forgotPasswordAction, undefined)

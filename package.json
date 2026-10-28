@@ -2,7 +2,14 @@
   "name": "nexus",
   "version": "0.5.3",
   "private": true,
-  "keywords": ["turbo", "nextjs", "tailwind css", "shadcn/ui", "prisma", "supabase"],
+  "keywords": [
+    "turbo",
+    "nextjs",
+    "tailwind css",
+    "shadcn/ui",
+    "prisma",
+    "supabase"
+  ],
   "author": {
     "name": "youming-ai",
     "email": "um1ng@pm.me",
@@ -20,10 +27,10 @@
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.6.3",
     "@workspace/typescript-config": "workspace:*",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
+    "lint-staged": "^17.6.0",
     "turbo": "^2.11.10",
     "typescript": "^5.9.3"
   },

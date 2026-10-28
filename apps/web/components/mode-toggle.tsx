@@ -1,9 +1,5 @@
 "use client"
 
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import type { FC } from "react"
-
 import { Button } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
@@ -11,6 +7,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+import { Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
+import type { FC } from "react"
 
 export type ModeToggleProps = Record<string, never>
 

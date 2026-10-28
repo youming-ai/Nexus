@@ -1,11 +1,9 @@
 "use client"
 
-import type { FC } from "react"
-
-import { useTransition } from "react"
-
-import { logoutAction } from "@/app/actions/auth/logout"
 import { Button } from "@workspace/ui/components/button"
+import type { FC } from "react"
+import { useTransition } from "react"
+import { logoutAction } from "@/app/actions/auth/logout"
 
 export type SignOutButtonProps = Record<string, never>
 

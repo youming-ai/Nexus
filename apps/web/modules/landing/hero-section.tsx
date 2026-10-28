@@ -1,13 +1,10 @@
-import type { FC } from "react"
-
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-
 import { Zap } from "lucide-react"
-
+import Link from "next/link"
+import type { FC } from "react"
 import { GithubIcon } from "@/components/icons/github-icon"
 import { APP_CONFIG } from "@/config/app"
-import Link from "next/link"
 
 export type HeroSectionProps = Record<string, never>
 
