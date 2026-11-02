@@ -1,6 +1,7 @@
 {
   "name": "nexus",
   "version": "0.7.0",
+  "description": "CLI scaffold to create, inspect, and upgrade full-stack Bun + TanStack Start applications on Cloudflare Workers",
   "private": true,
   "type": "module",
   "packageManager": "bun@1.4.4",
