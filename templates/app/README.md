@@ -1,32 +1,29 @@
 # Nexus application
 
-Bun + TanStack Start + Drizzle + Better Auth on Cloudflare Workers.
+Bun + TanStack Start + Void + Drizzle + Better Auth on Cloudflare Workers.
 
 ## Local development
 
-Use the generated `.nvmrc` to select Node 24.22.0. Requires Bun 1.4.4+ and a Node version supported by `cf` (22.23+, 24.22+, or 26.12+ in the corresponding release lines).
+Use the generated `.nvmrc` to select Node 24.22.0. Requires Bun 1.4.4+ and Node 24.22.0+ (required by Void).
 
 ```sh
 bun install --frozen-lockfile
-cp .env.example .env
-# Set BETTER_AUTH_SECRET to a private value (at least 32 characters).
-# Generate one with: openssl rand -base64 32
+printf 'BETTER_AUTH_SECRET=%s\n' "$(openssl rand -base64 32)" > .env
 bun run db:migrate
 bun run dev
 ```
 
-Visit http://localhost:3000. Open `/__debug` for Cloudflare's local explorer and simulated email inbox. Registration requires email verification; follow the verification link in the local inbox before signing in. Password reset emails appear there too. Local sends do not deliver mail externally.
-
-The checked-in database ID is a local placeholder. Each project's state is isolated under `.cloudflare/state`. The explicit `--persist-to` in the migration command points to the same state directory as the Vite development plugin.
+Visit http://localhost:3000. During local development, `void/email` captures verification and password-reset emails in Void's local inbox at `/__void/inbox` (the tokenized URL is printed when `bun run dev` starts and the token is written to `.void/dev-trigger-token`). Local sends never deliver mail externally.
 
 ## Code conventions
 
-- `*.server.ts`: server-only bindings, database and auth. Never import into client code.
+- `*.server.ts`: server-only bindings, database, email, and auth. Never import into client code.
 - `*.functions.ts`: typed server function boundaries, safe to import from components.
 - `src/schemas`: shared Zod input schemas. Server validation remains mandatory.
-- Create Drizzle and Better Auth inside requests, never cache user state at module scope.
+- `env.ts`: typed server environment variables via `void/env`. Local values live only in `.env` (gitignored); production values are set with `void secret put`. Do not create `.env.example` or `.dev.vars*`.
+- Create Drizzle (`getDb()`) and Better Auth (`getAuth()`) inside requests; never cache user state at module scope.
 - Use Web APIs in Worker code; Bun is a development tool, not the production runtime.
-- Keep custom Cloudflare bindings in `cloudflare.config.ts`; `nexus.bindings.ts` and `nexus.test.ts` are managed extension files.
+- Keep custom Void and Cloudflare settings in `void.config.ts`; `nexus.bindings.ts` and `nexus.test.ts` are managed extension files.
 - The `app` preset is single-user. The `team` preset adds organization authorization; see `TEAM.md` when present. Any new tenant resource must check membership and authorization on the server.
 
 ## Database changes
@@ -38,7 +35,7 @@ bun run db:generate
 bun run db:migrate
 ```
 
-Business tables live in `db/schema.ts`; generated auth tables live in `db/auth-schema.ts`. Commit SQL and metadata with schema changes. Do not edit already-applied migrations.
+Business tables live in `db/schema.ts`; generated auth tables live in `db/auth-schema.ts`. `void db generate` writes SQL and Drizzle metadata to `db/migrations/`; `void db migrate` applies pending migrations locally. Commit SQL and metadata with schema changes. Do not edit already-applied migrations.
 
 ```sh
 bun run typecheck
@@ -46,15 +43,15 @@ bun run test
 bun run build
 ```
 
-Tests run inside workerd with local D1 and simulated email, without cloud credentials. Production email still needs a staging delivery test.
+Tests run inside `workerd` with local D1 and `createEmailTestHarness` from `void/email/testing`, without cloud credentials.
 
 ## Before production
 
-1. Authenticate with `bunx cf auth login` or configure a CI API token.
-2. Discover resource creation with `bunx cf cli search "create a D1 database"`. Set the returned database ID in `cloudflare.config.ts`, replacing the local placeholder. Update the ID in the local migration script too, so dev and CLI address the same binding.
-3. Set `PUBLIC_ORIGIN` to the deployment's HTTPS origin. Set `EMAIL_FROM` to a sender on an onboarded Cloudflare Email Service domain. Discover the applicable setup commands with `bunx cf cli search "configure email sending domain"`.
-4. Configure `BETTER_AUTH_SECRET` as a production secret. Use the current options shown by `bunx cf deploy --help`; never commit secret values. `.env` is local-only.
-5. Apply migrations explicitly with `bunx cf d1 migrations apply <DATABASE_ID> --dir db/migrations` after reviewing the target account and database. Omitting `--local` targets the cloud. This is a separate operation from deploying code.
-6. Run the checks above, then `bun run deploy`.
-
-No CLI generation command creates resources, modifies DNS or deploys this project. Validate registration, email verification, login and password reset on a staging Worker before serving users. Restoring Worker code does not roll back database migrations.
+1. Connect your deployment target with `bunx void connect --platform cloudflare` (or `bunx void auth login`).
+2. Update `email.from` in `void.config.ts` to an address on a domain in your Cloudflare account.
+3. Configure production server values declared in `env.ts`:
+   ```sh
+   bunx void secret put PUBLIC_ORIGIN
+   bunx void secret put BETTER_AUTH_SECRET
+   ```
+4. Run `bun run deploy` (`bun run typecheck && bun run test && void deploy`). On first deploy, Void provisions missing Cloudflare resources (D1, R2 when `storage` is enabled, and email domain bindings), applies pending D1 migrations, and records resource IDs in `void.lock.json`. Commit `void.lock.json` after the first deployment.

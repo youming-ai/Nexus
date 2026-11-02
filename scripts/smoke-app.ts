@@ -1,14 +1,9 @@
 import { spawn } from "node:child_process"
-import { writeFile } from "node:fs/promises"
+import { readFile, writeFile } from "node:fs/promises"
 import { z } from "zod"
 
 const origin = "http://localhost:3000"
-const mailboxPath = "/cdn-cgi/local/explorer/api/local/email/sending"
-const mailboxSchema = z.object({
-  result: z.array(
-    z.object({ worker: z.string(), messageId: z.string(), subject: z.string(), to: z.unknown() })
-  ),
-})
+const mailboxPath = "/__void/inbox"
 
 export async function smokeApp(project: string, storage = false, team = false) {
   try {
@@ -38,7 +33,7 @@ export async function smokeApp(project: string, storage = false, team = false) {
   })
   try {
     await waitForServer(child)
-    await checkFlows(storage, team)
+    await checkFlows(project, storage, team)
     console.log(
       `HTTP smoke passed: verification, login, session, password reset${storage ? ", private uploads" : ""}${team ? ", team workspace" : ""}`
     )
@@ -70,7 +65,7 @@ async function waitForServer(child: ReturnType<typeof spawn>) {
   throw new Error("Development server did not become ready")
 }
 
-async function checkFlows(storage: boolean, team: boolean) {
+async function checkFlows(project: string, storage: boolean, team: boolean) {
   const email = `local-${crypto.randomUUID()}@example.com`
   const password = "a-private-smoke-test-password-42"
   const cookies = new Map<string, string>()
@@ -112,7 +107,7 @@ async function checkFlows(storage: boolean, team: boolean) {
     403,
     "unverified login"
   )
-  const verification = await getEmailLink(email, "Verify your email")
+  const verification = await getEmailLink(project, email, "Verify your email")
   assertStatus(
     await request(`${verification.pathname}${verification.search}`),
     302,
@@ -160,7 +155,7 @@ async function checkFlows(storage: boolean, team: boolean) {
     200,
     "request password reset"
   )
-  const reset = await getEmailLink(email, "Reset your password")
+  const reset = await getEmailLink(project, email, "Reset your password")
   const resetRedirect = await request(`${reset.pathname}${reset.search}`)
   assertStatus(resetRedirect, 302, "reset link")
   const token = new URL(resetRedirect.headers.get("location") ?? "", origin).searchParams.get(
@@ -186,19 +181,29 @@ async function checkFlows(storage: boolean, team: boolean) {
   )
 }
 
-async function getEmailLink(email: string, subject: string) {
-  const mailbox = mailboxSchema.parse(await (await fetch(`${origin}${mailboxPath}`)).json())
-  const item = mailbox.result.find(
-    (item) => item.subject === subject && JSON.stringify(item.to).includes(email)
-  )
-  if (!item) throw new Error(`Simulated email missing: ${subject}`)
-  const query = new URLSearchParams({ worker: item.worker, email_id: item.messageId })
-  const detail = z
-    .object({ result: z.object({ text: z.string() }) })
-    .parse(await (await fetch(`${origin}${mailboxPath}?${query}`)).json())
-  const link = detail.result.text.match(/https?:\/\/\S+/)?.[0]
-  if (!link) throw new Error("Email link missing")
-  const url = new URL(link)
-  if (url.origin !== origin) throw new Error("Email link must remain local")
-  return url
+async function getEmailLink(project: string, email: string, subject: string) {
+  const token = (await readFile(`${project}/.void/dev-trigger-token`, "utf8")).trim()
+  const listHtml = await (
+    await fetch(`${origin}${mailboxPath}`, { headers: { "x-void-dev-trigger": token } })
+  ).text()
+  const ids = [
+    ...new Set(
+      [...listHtml.matchAll(/\/__void\/inbox\/(dev_[A-Za-z0-9_-]+)/g)].map((match) => match[1])
+    ),
+  ]
+  for (const id of ids) {
+    const raw = await (
+      await fetch(`${origin}${mailboxPath}/${id}/raw`, {
+        headers: { "x-void-dev-trigger": token },
+      })
+    ).text()
+    if (!raw.includes(`Subject: ${subject}`) || !raw.includes(email)) continue
+    const plainSection = raw.split("Content-Type: text/html")[0] ?? raw
+    const link = plainSection.match(/https?:\/\/\S+/)?.[0]
+    if (!link) throw new Error("Email link missing")
+    const url = new URL(link)
+    if (url.origin !== origin) throw new Error("Email link must remain local")
+    return url
+  }
+  throw new Error(`Simulated email missing: ${subject}`)
 }

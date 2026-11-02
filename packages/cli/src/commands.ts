@@ -48,7 +48,7 @@ function report(plan: Plan, command: Command, values: Options) {
   if (plan.conflicts.length) lines.push(`Conflicts: ${plan.conflicts.join(", ")}`)
   if (command === "create")
     lines.push(
-      "Next: copy .env.example to .env, set a private secret, then run bun run db:migrate and bun run dev. See README.md for cloud setup."
+      "Next: create .env with BETTER_AUTH_SECRET, then run bun run db:migrate and bun run dev. See README.md for Void deployment."
     )
   console.log(values.json ? JSON.stringify(result) : lines.join("\n"))
   if (plan.conflicts.length) process.exitCode = 1

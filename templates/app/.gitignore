@@ -2,9 +2,13 @@ node_modules/
 dist/
 .cloudflare/
 .tanstack/
+.void/
+.wrangler/
+.void-wrangler.jsonc
 .env
 .env.*
-!.env.example
 .dev.vars*
 coverage/
+*.tsbuildinfo
+.DS_Store
 src/routeTree.gen.ts

@@ -5,18 +5,18 @@
   "type": "module",
   "packageManager": "bun@1.4.4",
   "engines": {
-    "node": ">=22.23.0",
+    "node": ">=24.22.0",
     "bun": ">=1.4.4"
   },
   "scripts": {
-    "dev": "cf dev",
-    "build": "cf build",
-    "deploy": "bun run typecheck && bun run test && cf deploy",
-    "typecheck": "tsr generate && cf workers types && tsc --noEmit",
+    "dev": "vite dev",
+    "build": "vite build",
+    "deploy": "bun run typecheck && bun run test && void deploy",
+    "typecheck": "tsr generate && void prepare && tsc --noEmit",
     "test": "vitest run",
-    "db:generate": "drizzle-kit generate",
+    "db:generate": "void db generate",
     "auth:generate": "auth generate --config src/lib/auth.cli.ts --output db/auth-schema.ts --yes",
-    "db:migrate": "cf d1 migrations apply 00000000-0000-4000-8000-000000000001 --local --persist-to .cloudflare/state --dir db/migrations"
+    "db:migrate": "void db migrate"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.5.0",
@@ -33,7 +33,6 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "2.0.0-beta.v.9",
     "@cloudflare/vitest-plugin": "1.4.12",
     "@tailwindcss/vite": "4.3.3",
     "@tanstack/router-cli": "1.167.46",
@@ -42,11 +41,10 @@
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.2",
     "auth": "1.7.15",
-    "cf": "1.0.0-beta.26",
-    "drizzle-kit": "0.31.11",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
     "vite": "8.3.5",
-    "vitest": "5.0.5"
+    "vitest": "5.0.5",
+    "void": "1.5.0"
   }
 }

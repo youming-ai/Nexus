@@ -4,7 +4,6 @@ node_modules
 # Local env files
 .env
 .env.*
-!.env.example
 .dev.vars
 .dev.vars.*
 
@@ -15,6 +14,9 @@ coverage
 build
 dist
 .cloudflare/
+.void/
+.wrangler/
+.void-wrangler.jsonc
 .tanstack/
 packages/cli/assets/
 packages/cli/LICENSE

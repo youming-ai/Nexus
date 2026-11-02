@@ -4,17 +4,17 @@
 
 ## 项目与边界
 
-Nexus 是将 `youming-ai/bun-ts-stack-skills`（Bun + TanStack Start + Cloudflare Workers + D1 + Drizzle + Better Auth + Cloudflare Email + Tailwind v4）落地为可生成、可验证、可升级工程的 CLI 脚手架（发布包名 `@youming-ai/create-nexus`，提供 `create-nexus` 与 `nexus` 两个命令）。
+Nexus 是将 `youming-ai/bun-ts-stack-skills`（Bun + TanStack Start + Void + Cloudflare Workers + D1 + Drizzle + Better Auth + Void Email + Tailwind v4）落地为可生成、可验证、可升级工程的 CLI 脚手架（发布包名 `@youming-ai/create-nexus`，提供 `create-nexus` 与 `nexus` 两个命令）。
 
 Nexus 只承担四项职责：
 
 1. **创建项目（`create`）**：基于经过验证的锁文件与模板生成单用户（`app`）或团队多租户（`team`）项目。
 2. **添加能力（`add storage`）**：通过受管扩展文件向既有项目叠加私有 R2 上传/下载接口、绑定声明与权限测试。
-3. **检查项目（`doctor`）**：静态校验生成文件完整性、核心依赖、本地密钥及部署占位配置。
+3. **检查项目（`doctor`）**：静态校验生成文件完整性、核心依赖、本地密钥及部署配置。
 4. **受控升级（`upgrade`）**：按已审查的版本迁移白名单升级模板文件，保留用户未冲突的修改，遇到双端修改冲突时停止写入。
 
 **硬性边界**：
-- CLI 运行在本地，**绝不在生成、添加模块、检查或升级过程中创建云端资源、修改 DNS、发送外部邮件或执行远端部署**。云端资源（D1、R2、Email Domain）与部署全部由生成项目中的 `cf` CLI 显式执行。
+- CLI 运行在本地，**绝不在生成、添加模块、检查或升级过程中创建云端资源、修改 DNS、发送外部邮件或执行远端部署**。云端资源（D1、R2、Email Domain）与部署全部由生成项目中的 `void deploy` 显式执行（底层封装 `cf`）。
 - `create` 永远拒绝已存在的目标目录（含空目录），不提供强制覆盖参数。
 - 旧版 Next.js + Supabase + Prisma 模板已退役并从仓库移除，不提供旧版 Supabase 数据或账号迁移。
 
@@ -47,7 +47,7 @@ docs/
 
 ## 开发与验证
 
-需要 **Bun `>= 1.4.4`**（包管理与脚本运行）和 **Node `>= 22.23.0`**（`cf` CLI 与 Vite 配置加载运行在 Node 上，见 `.nvmrc`）。
+需要 **Bun `>= 1.4.4`**（包管理与脚本运行）和 **Node `>= 22.23.0`**（`void` / `cf` CLI 与 Vite 配置加载运行在 Node 上，见 `.nvmrc`）。
 
 | 命令 | 作用 |
 | --- | --- |
@@ -69,7 +69,7 @@ bun run check && bun run typecheck && bun run test && bun run verify:generated
 
 生成项目基于 `youming-ai/bun-ts-stack-skills`（commit `ba44f26`），并针对本仓库 CLI 规范做以下固定约束：
 
-1. **统一使用 `cf` CLI，不使用 Void 或 Wrangler**：生成项目仅维护单一 `cloudflare.config.ts`，不生成 `void.config.ts`、`void.lock.json` 或手写 `wrangler.toml`。
+1. **统一使用 `void`（`void.config.ts` + `env.ts`），不手写 Wrangler 配置**：生成项目仅维护单一 `void.config.ts` 与类型化环境变量声明 `env.ts`（`defineEnv` from `void/env`），通过 `voidPlugin()`（封装 `@cloudflare/vite-plugin` 与 `cf`）自动合成 `.void/` 运行时类型与绑定；不手写 `wrangler.toml` / `wrangler.jsonc`，也不提交 `.env.example`。
 2. **Worker 运行时边界**：应用与测试均运行在 Cloudflare `workerd`（V8 isolate）。业务与路由代码只用 Web 标准 API（`fetch`、`crypto.randomUUID()`、Web Streams），禁止在 Worker 代码中调用 `Bun.*` 或 `node:*` 文件系统。
 3. **请求级绑定（Request-scoped bindings）**：D1 Drizzle 实例（`getDb()`）与 Better Auth 实例（`getAuth()`）必须在每次请求内创建，严禁在模块顶层缓存数据库连接、Auth 实例或用户状态。
 4. **模块边界与文件命名**：
@@ -78,9 +78,10 @@ bun run check && bun run typecheck && bun run test && bun run verify:generated
    - `src/schemas/*.ts`：前后端共用的 Zod 校验定义；服务端入口必须再次解析校验，不信任客户端入参。
 5. **认证与数据库迁移**：
    - Better Auth schema 影响项集中在 `src/lib/auth.shared.ts`，通过与运行库同版本的 `auth` CLI（`bun run auth:generate`）从 `src/lib/auth.cli.ts` 生成 `db/auth-schema.ts`。
-   - 业务表定义在 `db/schema.ts`，通过 `drizzle-kit`（`bun run db:generate`）生成 SQL 迁移至 `db/migrations/`，本地通过 `cf d1 migrations apply --local` 应用。
+   - 业务表定义在 `db/schema.ts`，通过 `void db generate`（`bun run db:generate`）生成 SQL 迁移至 `db/migrations/`，本地通过 `void db migrate`（`bun run db:migrate`）应用。
+   - 邮件统一通过 `void/email` 的 `sendEmail` 发送，本地开发投递至 `/__void/inbox`，Vitest 测试通过 `void/email/testing` 的 `createEmailTestHarness()` 内存拦截。
 6. **安全响应头与 CSRF**：`src/start.ts` 使用 `createStart` 注册全局安全响应头中间件时，必须显式保留 `createCsrfMiddleware({ filter: (ctx) => ctx.handlerType === "serverFn" })`。
-7. **受管扩展点**：可选模块只改写 `nexus.bindings.ts` 和 `nexus.test.ts`，用户自定义的额外绑定放在 `cloudflare.config.ts`。
+7. **受管扩展点**：可选模块只改写 `nexus.bindings.ts` 和 `nexus.test.ts`，用户自定义的额外绑定放在 `void.config.ts`。
 8. **多租户授权（`team` 预设）**：D1 没有 Supabase RLS；`src/features/team/team.server.ts` 是租户授权边界，所有租户读写必须在服务端核对当前用户的组织成员身份与角色（`owner` / `admin` / `member`），项目写入必须与 `audit_event` 在同一 D1 batch 中原子提交。
 
 ## 版本与升级规范

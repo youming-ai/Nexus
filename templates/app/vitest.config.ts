@@ -15,14 +15,13 @@ export default defineConfig(async () => ({
   plugins: [
     cloudflareTest({
       miniflare: {
-        compatibilityDate: "2026-11-02",
+        compatibilityDate: "2026-10-15",
         compatibilityFlags: ["nodejs_compat"],
         d1Databases: ["DB"],
         ...featureTestBindings,
-        email: { send_email: [{ name: "EMAIL" }] },
         bindings: {
           PUBLIC_ORIGIN: "http://localhost:3000",
-          EMAIL_FROM: "Nexus <hello@example.com>",
+          __VOID_EMAIL_FROM: "Nexus <hello@example.com>",
           BETTER_AUTH_SECRET: "test-secret-that-is-at-least-thirty-two-characters-long",
           TEST_MIGRATIONS: await readD1Migrations("./db/migrations"),
         },

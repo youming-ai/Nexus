@@ -2,9 +2,9 @@
 
 <div align="center">
 
-**面向 Bun + TanStack Start + Cloudflare Workers 全栈技术栈的企业级 CLI 脚手架**
+**面向 Bun + TanStack Start + Void + Cloudflare Workers 全栈技术栈的企业级 CLI 脚手架**
 
-Bun 1.4.4+ · TanStack Start (React 19) · Cloudflare Workers (`cf`) · D1 + Drizzle ORM · Better Auth · Cloudflare Email · Tailwind CSS v4 · Vitest (`workerd`)
+Bun 1.4.4+ · TanStack Start (React 19) · Void (`void` + `cf`) · Cloudflare Workers · D1 + Drizzle ORM · Better Auth · Void Email · Tailwind CSS v4 · Vitest (`workerd`)
 
 </div>
 
@@ -33,7 +33,7 @@ Nexus 是将 [`youming-ai/bun-ts-stack-skills`](https://github.com/youming-ai/bu
 
 ## 快速开始
 
-需要 **Bun `>= 1.4.4`** 以及 `cf` 支持的 **Node 版本（`>= 22.23.0`，仓库根目录与生成项目均提供 `.nvmrc`）**。Bun 负责包管理与脚本执行，`cf` CLI 及其 Vite 配置加载运行在 Node 上。
+需要 **Bun `>= 1.4.4`** 以及 `void` / `cf` 支持的 **Node 版本（`>= 22.23.0`，仓库根目录与生成项目均提供 `.nvmrc`）**。Bun 负责包管理与脚本执行，`void` CLI 及其 Vite 配置加载运行在 Node 上。
 
 ```bash
 # 1. 安装并构建 CLI
@@ -45,13 +45,12 @@ bun packages/cli/dist/index.js create ./my-app
 cd my-app
 
 # 3. 配置本地环境变量并执行本地 D1 迁移
-cp .env.example .env
-# 将 .env 中的 BETTER_AUTH_SECRET 替换为至少 32 位的随机密钥（例如 openssl rand -base64 32）
+printf "BETTER_AUTH_SECRET=%s\nBETTER_AUTH_URL=http://localhost:3000\n" "$(openssl rand -base64 32)" > .env
 bun run db:migrate
 bun run dev
 ```
 
-打开 `http://localhost:3000`。本地开发与测试不会向外部发送真实邮件；注册验证邮件与密码重置邮件会投递到 Cloudflare Local Explorer（`http://localhost:3000/__debug`），点击其中的验证链接即可完成账号激活并登录。
+打开 `http://localhost:3000`。本地开发与测试不会向外部发送真实邮件；注册验证邮件与密码重置邮件会由 `void/email` 投递到本地收件箱（`http://localhost:3000/__void/inbox`），提取其中的验证链接即可完成账号激活并登录。
 
 发布至包管理仓库后，可直接通过 `bunx @youming-ai/create-nexus my-app` 调用。
 
@@ -129,7 +128,7 @@ bun pm pack
 
 ## 架构与技术栈说明
 
-基于 [`youming-ai/bun-ts-stack-skills` (`ba44f26`)](https://github.com/youming-ai/bun-ts-stack-skills/blob/ba44f2676f059a011536ed5c1cf72db1ede37dba/tanstack/SKILL.md)，并统一采用 Cloudflare 官方 `cf` CLI（`cloudflare.config.ts`）管理构建、本地 D1 迁移与部署，使用与运行库版本一致的 `auth` CLI 生成 Better Auth Drizzle Schema。详见：
+完整对齐 [`youming-ai/bun-ts-stack-skills` (`ba44f26`)](https://github.com/youming-ai/bun-ts-stack-skills/blob/ba44f2676f059a011536ed5c1cf72db1ede37dba/tanstack/SKILL.md)，通过 `void`（`void.config.ts`、`env.ts`、`voidPlugin()`、`void db`、`void deploy`、`void/email`）与底层 Cloudflare `cf` CLI 统一管理类型化环境变量、本地 D1 迁移、邮件收件箱与生产部署，并使用与运行库版本一致的 `auth` CLI 生成 Better Auth Drizzle Schema。详见：
 
 - [架构设计与技术栈偏差说明](docs/architecture.md)
 - [项目升级与冲突处理规则](docs/upgrades.md)

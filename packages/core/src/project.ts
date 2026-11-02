@@ -27,11 +27,9 @@ export async function renderApp(templateDir: string, name: string, overlayDir?: 
     files[path === "gitignore" ? ".gitignore" : path] = [
       "package.json",
       "bun.lock",
-      "cloudflare.config.ts",
+      "void.config.ts",
     ].includes(path)
-      ? content
-          .replaceAll('"nexus-app"', JSON.stringify(name))
-          .replaceAll('"nexus-app-db"', JSON.stringify(`${name}-db`))
+      ? content.replaceAll('"nexus-app"', JSON.stringify(name))
       : content
   }
   return files
@@ -76,10 +74,6 @@ export async function planAddStorage(moduleDir: string, root: string): Promise<P
   if (manifest.templateVersion !== VERSION)
     throw new Error("Upgrade this project before adding modules")
   const files = await readTree(moduleDir)
-  files["nexus.bindings.ts"] = (files["nexus.bindings.ts"] ?? "").replaceAll(
-    '"nexus-app-storage"',
-    JSON.stringify(`${manifest.name}-storage`)
-  )
   return planUpdates(root, "add", manifest, content, files, {
     ...manifest,
     modules: [...manifest.modules, "storage"],
@@ -102,10 +96,6 @@ export async function planUpgrade(
   )
   if (manifest.modules.includes("storage")) {
     Object.assign(files, await readTree(moduleDir))
-    files["nexus.bindings.ts"] = (files["nexus.bindings.ts"] ?? "").replaceAll(
-      '"nexus-app-storage"',
-      JSON.stringify(`${manifest.name}-storage`)
-    )
   }
   return planUpdates(root, "upgrade", manifest, content, files, manifest)
 }

@@ -25,16 +25,15 @@ export async function readTree(root: string, prefix = ""): Promise<Record<string
   const entries = await readdir(join(root, prefix), { withFileTypes: true })
   entries.sort((left, right) => (left.name < right.name ? -1 : left.name > right.name ? 1 : 0))
   for (const entry of entries) {
-    if (
-      (entry.name.startsWith(".env") && entry.name !== ".env.example") ||
-      entry.name.startsWith(".dev.vars")
-    )
-      continue
+    if (entry.name.startsWith(".env") || entry.name.startsWith(".dev.vars")) continue
     if (
       [
         "node_modules",
         ".cloudflare",
         ".tanstack",
+        ".void",
+        ".wrangler",
+        ".void-wrangler.jsonc",
         "dist",
         ".git",
         "coverage",

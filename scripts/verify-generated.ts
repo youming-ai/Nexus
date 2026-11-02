@@ -41,6 +41,8 @@ try {
   await rm(join(project, ".env"))
   // Independent fixtures also isolate persistent authentication rate-limit buckets.
   await rm(join(project, ".cloudflare/state"), { recursive: true, force: true })
+  await rm(join(project, ".void"), { recursive: true, force: true })
+  await rm(join(project, ".wrangler"), { recursive: true, force: true })
   await run(["bun", "run", "db:migrate"], project)
   await smokeApp(project, true)
   const teamProject = join(temporary, "team-sample")
@@ -61,6 +63,7 @@ try {
   await run(["bun", cli, "upgrade", "--dry-run", "--json"], upgradeProject)
   await run(["bun", cli, "upgrade", "--json"], upgradeProject)
   await run(["bun", "install", "--frozen-lockfile"], upgradeProject)
+  await run(["bun", "run", "db:migrate"], upgradeProject)
   await run(["bun", "run", "typecheck"], upgradeProject)
   await run(["bun", "run", "test"], upgradeProject)
   await run(["bun", "run", "build"], upgradeProject)

@@ -39,24 +39,24 @@ export async function doctor(root: string): Promise<Finding[]> {
       message:
         "Set a private BETTER_AUTH_SECRET (at least 32 characters) in .env or the environment",
     })
-  const config = await readOptional(join(root, "cloudflare.config.ts"))
+  const config = await readOptional(join(root, "void.config.ts"))
   if (manifest.modules.includes("storage") && !config?.includes("featureBindings"))
     findings.push({
       level: "error",
       code: "missing-storage-bindings",
-      message: "cloudflare.config.ts must spread featureBindings from ./nexus.bindings.ts",
+      message: "void.config.ts must spread featureBindings from ./nexus.bindings.ts",
     })
-  if (config?.includes("00000000-0000-4000-8000-000000000001"))
+  if (!(await readOptional(join(root, "void.lock.json"))))
     findings.push({
       level: "warning",
-      code: "local-database",
-      message: "D1 uses the local placeholder ID. Provision a real database before deploying.",
+      code: "unprovisioned-resources",
+      message: "void.lock.json is not present yet. Run void deploy to provision resources.",
     })
   if (config?.includes("hello@example.com"))
     findings.push({
       level: "warning",
       code: "email-sender",
-      message: "Set EMAIL_FROM to an onboarded sender before deploying.",
+      message: "Set email.from in void.config.ts to an onboarded sender before deploying.",
     })
   if (findings.every((finding) => finding.level !== "error"))
     findings.unshift({
@@ -102,8 +102,8 @@ async function checkDependencies(root: string): Promise<Finding[]> {
           message: `Missing dependency: ${dependency}`,
         })
     }
-    if (!pkg.devDependencies.cf)
-      findings.push({ level: "error", code: "missing-dependency", message: "Missing cf CLI" })
+    if (!pkg.devDependencies.void)
+      findings.push({ level: "error", code: "missing-dependency", message: "Missing void CLI" })
   }
   return findings
 }

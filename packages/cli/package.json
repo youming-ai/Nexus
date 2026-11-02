@@ -5,6 +5,7 @@
   "keywords": [
     "bun",
     "tanstack-start",
+    "void",
     "cloudflare-workers",
     "cloudflare-d1",
     "cloudflare-r2",

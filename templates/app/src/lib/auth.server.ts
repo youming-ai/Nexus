@@ -1,10 +1,11 @@
 import "@tanstack/react-start/server-only"
-import { env } from "cloudflare:workers"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { tanstackStartCookies } from "better-auth/tanstack-start"
+import { env } from "void/env"
 import { z } from "zod"
 import { getDb } from "~/db/index.server"
+import "../../env"
 import { schemaOptions } from "./auth.shared"
 import { sendAuthEmail } from "./email.server"
 

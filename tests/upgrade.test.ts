@@ -45,9 +45,9 @@ test("reviewed development baseline upgrades while preserving user code and priv
 
 test("a file changed upstream and locally blocks the whole upgrade", async () => {
   const root = await fixture()
-  await writeFile(join(root, ".env.example"), "# My custom environment template\n")
+  await writeFile(join(root, "README.md"), "# My custom project docs\n")
   const plan = await planUpgrade(template, storage, root)
-  expect(plan.conflicts).toContain(".env.example")
+  expect(plan.conflicts).toContain("README.md")
   await expect(executePlan(plan)).rejects.toThrow("modified files")
   expect((await loadProject(root)).manifest.templateVersion).toBe("0.6.0")
   expect(existsSync(join(root, ".nvmrc"))).toBe(false)
