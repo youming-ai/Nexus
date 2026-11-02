@@ -31,56 +31,118 @@ Nexus 是将 [`youming-ai/bun-ts-stack-skills`](https://github.com/youming-ai/bu
 | 预设 | `team` | 在 `app` 基础上增加 Better Auth Organization 插件、组织创建与切换、成员邮件邀请（校验受邀邮箱归属）、`owner` / `admin` / `member` 服务端 RBAC 校验、租户隔离项目与 D1 原子提交的 `audit_event` 审计日志，以及跨租户越权与撤销成员测试 |
 | 模块 | `storage` | 按认证用户 ID 隔离的私有 R2 上传（`POST /api/files/`，同源校验 + 10 MiB 流式大小限制）与附件下载（`GET /api/files/$id`）接口，自动注入受管扩展 `nexus.bindings.ts` 与 `nexus.test.ts` |
 
-## 快速开始
+## 使用指南
 
-需要 **Bun `>= 1.4.4`** 以及 `void` / `cf` 支持的 **Node 版本（`>= 22.23.0`，仓库根目录与生成项目均提供 `.nvmrc`）**。Bun 负责包管理与脚本执行，`void` CLI 及其 Vite 配置加载运行在 Node 上。
+### 1. 环境准备与 CLI 安装
+
+需要安装：
+- **Bun `>= 1.4.4`**（负责包管理与脚本执行）
+- **Node `>= 22.23.0`**（`void` / `cf` CLI 与 Vite 配置加载运行在 Node 上，仓库根目录与生成项目均提供 `.nvmrc`）
+
+从源码构建并可选注册全局命令：
 
 ```bash
-# 1. 安装并构建 CLI
 bun install --frozen-lockfile
 bun run build
 
-# 2. 创建新项目（默认 app 预设）
-bun packages/cli/dist/index.js create ./my-app
-cd my-app
+# 可选：全局注册 create-nexus 与 nexus 命令
+cd packages/cli && bun link && cd ../..
+```
 
-# 3. 配置本地环境变量并执行本地 D1 迁移
+> 发布至 npm 后，可直接通过 `bunx @youming-ai/create-nexus my-app` 调用；本地未 `bun link` 时可使用 `bun packages/cli/dist/index.js <command>`。
+
+### 2. 创建新项目（`create`）
+
+支持单用户（`app`）与团队多租户（`team`）两种预设：
+
+```bash
+# 创建默认单用户应用（自动执行 bun install）
+bun packages/cli/dist/index.js create ./my-app
+
+# 创建团队多租户应用
+bun packages/cli/dist/index.js create ./my-team-app --preset team
+
+# 跳过自动安装依赖，或仅预览生成计划（不写入文件）
+bun packages/cli/dist/index.js create ./my-app --no-install
+bun packages/cli/dist/index.js create ./my-app --dry-run --json
+```
+
+### 3. 启动生成出来的项目
+
+进入生成的项目目录，生成本地 `.env`（Void 仅支持单一 `.env` 本地密钥文件，禁止创建 `.env.example`），执行本地 D1 迁移并启动开发服：
+
+```bash
+cd ./my-app
+
+# 1. 生成本地 .env（BETTER_AUTH_SECRET 需不少于 32 个字符）
 printf "BETTER_AUTH_SECRET=%s\nBETTER_AUTH_URL=http://localhost:3000\n" "$(openssl rand -base64 32)" > .env
+
+# 2. 应用本地 D1 数据库迁移（底层调用 void db migrate）
 bun run db:migrate
+
+# 3. 启动本地开发服务器
 bun run dev
 ```
 
-打开 `http://localhost:3000`。本地开发与测试不会向外部发送真实邮件；注册验证邮件与密码重置邮件会由 `void/email` 投递到本地收件箱（`http://localhost:3000/__void/inbox`），提取其中的验证链接即可完成账号激活并登录。
+- **访问应用**：打开 `http://localhost:3000`
+- **本地模拟邮件收件箱**：本地开发与测试不会向外部发送真实邮件；注册验证邮件、密码重置邮件与团队邀请邮件会由 `void/email` 投递到本地收件箱 `http://localhost:3000/__void/inbox`，提取其中的验证链接即可完成激活与登录。
 
-发布至包管理仓库后，可直接通过 `bunx @youming-ai/create-nexus my-app` 调用。
+### 4. 按需叠加私有 R2 存储模块（`add storage`）
 
-## CLI 命令
+为现有项目增量添加私有 R2 文件上传与下载能力：
 
 ```bash
-# 预览创建计划（不写入文件、不安装依赖），输出机器可读 JSON
-bun packages/cli/dist/index.js create ./my-app --dry-run --json
-
-# 创建单用户应用（跳过自动安装依赖）
-bun packages/cli/dist/index.js ./my-app --preset app --no-install
-
-# 创建团队多租户应用
-bun packages/cli/dist/index.js ./team-app --preset team --no-install
-
-# 为现有项目预览并添加私有 R2 存储模块
+# 预览将新增和修改的文件
 bun packages/cli/dist/index.js add storage --cwd ./my-app --dry-run
+
+# 正式安装存储模块
 bun packages/cli/dist/index.js add storage --cwd ./my-app
+```
 
-# 检查项目文件、依赖与部署占位项（--strict 将 warning 视为失败）
-bun packages/cli/dist/index.js doctor --cwd ./my-app --json
-bun packages/cli/dist/index.js doctor --cwd ./my-app --strict
+安装后会注入 `POST /api/files/`、`GET /api/files/$id`、`test/storage.test.ts`，并将受管扩展 `nexus.bindings.ts` 中的 `storage` 设为 `true`（由 `void.config.ts` 自动挂载 R2 桶）。
 
-# 预览并执行受控模板升级
+### 5. 项目健康检查（`doctor`）与受控升级（`upgrade`）
+
+```bash
+# 检查受管文件完整性、核心依赖、本地 .env 密钥与 void.lock.json 状态（--strict 将 warning 视为失败）
+bun packages/cli/dist/index.js doctor --cwd ./my-app
+bun packages/cli/dist/index.js doctor --cwd ./my-app --strict --json
+
+# 预览并执行跨版本模板升级（保留未冲突的业务修改，遇到双端冲突自动中止）
 bun packages/cli/dist/index.js upgrade --cwd ./my-app --dry-run
 bun packages/cli/dist/index.js upgrade --cwd ./my-app
 ```
 
 - **目录与命名保护**：`create` 拒绝任何已存在的目标目录（包括空目录）。应用名称须以小写字母开头，仅含小写字母、数字和连字符（最长 48 个字符，不以连字符结尾）；当目录名不满足命名规则时可通过 `--name` 指定。
 - **冲突检测与回滚**：`add` 与 `upgrade` 根据 `nexus.json` 记录的 SHA-256 基线哈希比对本地文件，检查规划后是否发生并发修改，拒绝符号链接路径，并在写入异常时回滚已写入文件。详细升级规则见 [`docs/upgrades.md`](docs/upgrades.md)。
+
+### 6. 生成项目内的日常开发与部署命令
+
+在生成出来的项目目录（如 `./my-app`）中，内置以下脚本：
+
+| 命令 | 说明 |
+| --- | --- |
+| `bun run dev` | 启动本地开发服务器（含 `voidPlugin()` 与 `/__void/inbox` 本地邮件收件箱） |
+| `bun run db:generate` | 修改 `db/schema.ts` 后，通过 `void db generate` 生成 SQL 迁移至 `db/migrations/` |
+| `bun run db:migrate` | 通过 `void db migrate` 将 SQL 迁移应用到本地 D1 |
+| `bun run auth:generate` | 修改 `src/lib/auth.shared.ts` 后，通过 `auth` CLI 重新生成 `db/auth-schema.ts` |
+| `bun run typecheck` | 运行 `tsr generate && void prepare && tsc --noEmit`，生成 `.void/` 类型并执行全量类型检查 |
+| `bun run test` | 在 Cloudflare `workerd` 沙箱中运行 Vitest 集成测试（邮件由 `void/email/testing` 内存拦截） |
+| `bun run build` | 构建生产包（`vite build`） |
+| `bun run deploy` | 完成类型检查与测试后，调用 `void deploy` 置备/同步 D1、R2、邮件域名并部署至 Cloudflare Workers |
+
+## 技术栈总览
+
+| 层级 | 技术 / 包 | 版本 |
+| --- | --- | --- |
+| **包管理与脚本运行时** | Bun + Node.js（供 `void` / `cf` 与 Vite 配置加载使用） | Bun `1.4.4` · Node `>= 22.23.0` |
+| **全栈框架与路由** | React 19 + TanStack Start + TanStack Router + TanStack Form | `react@19.3.1` · `@tanstack/react-start@1.172.3` · `@tanstack/react-router@1.172.3` · `@tanstack/react-form@1.29.4` |
+| **部署、构建与资源编排** | Void（`void.config.ts`、`env.ts`、`voidPlugin()`、`void db`、`void deploy`）+ Cloudflare `cf` CLI + Vite 8 | `void@1.5.0`（内含 `cf@^1.0.0-beta.26`、`@cloudflare/vite-plugin@^2.0.0-beta.v.9`）· `vite@8.1.2` |
+| **数据库与 ORM** | Cloudflare D1 + Drizzle ORM + Drizzle Kit（通过 `void db` 调用） | `drizzle-orm@0.45.4` · `drizzle-kit@^0.31.11` |
+| **身份认证与多租户** | Better Auth（及 `organization` 插件）+ `auth` CLI | `better-auth@1.6.5` · `auth@0.1.7` |
+| **邮件与对象存储** | Void Email（`void/email`、开发收件箱 `/__void/inbox`、测试 `void/email/testing`）+ Cloudflare R2 | `void@1.5.0` · Cloudflare R2 `R2Bucket` |
+| **样式与 UI 组件** | Tailwind CSS v4 + Base UI + CVA + Lucide | `tailwindcss@4.2.5` · `@tailwindcss/vite@4.2.5` · `@base-ui/react@1.4.2` |
+| **校验、测试与代码质量** | Zod v4 + TypeScript + Vitest (`workerd`) + Biome | `zod@4.6.7` · `typescript@5.9.3` · `vitest@5.0.5` · `@cloudflare/vitest-pool-workers@0.15.2` · `@biomejs/biome@2.6.4` |
 
 ## 仓库结构
 

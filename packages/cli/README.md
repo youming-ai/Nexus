@@ -1,14 +1,22 @@
-# Nexus CLI
+# `@youming-ai/create-nexus`
 
-Create and maintain Bun + TanStack Start applications on Cloudflare Workers.
+Create, inspect, and upgrade full-stack Bun + TanStack Start + Void applications on Cloudflare Workers.
 
 ```sh
 create-nexus my-app
-nexus add storage
-nexus doctor
-nexus upgrade --dry-run
+cd my-app
+printf "BETTER_AUTH_SECRET=%s\nBETTER_AUTH_URL=http://localhost:3000\n" "$(openssl rand -base64 32)" > .env
+bun run db:migrate
+bun run dev
 ```
 
-Use `--help` for command details. Bun 1.4.4+ is required; generated apps also need Node 22.23+ to run the Cloudflare CLI. The package bundles all template files and does not fetch mutable Git branches at creation time.
+Additional commands:
 
-This is an unpublished development version. Build and use the local executable from the repository; a registry release is a separate step.
+```sh
+create-nexus my-team-app --preset team
+nexus add storage --cwd ./my-app
+nexus doctor --cwd ./my-app
+nexus upgrade --cwd ./my-app --dry-run
+```
+
+Use `--help` for command details. Bun `>= 1.4.4` is required; generated apps also need Node `>= 22.23.0` to run `void` / `cf` and Vite configuration loading. The package bundles all template files and does not fetch mutable Git branches at creation time.
