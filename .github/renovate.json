@@ -53,11 +53,6 @@
     ]
   },
   "ignorePaths": [
-    "apps/**",
-    "packages/db/**",
-    "packages/ui/**",
-    "packages/typescript-config/**",
-    "docs/legacy/**",
     "tests/fixtures/**"
   ]
 }

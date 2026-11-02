@@ -12,9 +12,7 @@
       "!**/node_modules",
       "!**/dist",
       "!**/build",
-      "!**/.next",
       "!**/coverage",
-      "!**/packages/db/generated",
       "!**/*.md",
       "!**/*.{yml,yaml}",
       "!**/*.svg"

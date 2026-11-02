@@ -1,103 +1,140 @@
 # Nexus
 
-A Bun CLI that creates and maintains TanStack Start applications on Cloudflare Workers.
+<div align="center">
 
-**Development version: 0.7.0. Not published to a registry.**
+**面向 Bun + TanStack Start + Cloudflare Workers 全栈技术栈的企业级 CLI 脚手架**
 
-## Use locally
+Bun 1.4.4+ · TanStack Start (React 19) · Cloudflare Workers (`cf`) · D1 + Drizzle ORM · Better Auth · Cloudflare Email · Tailwind CSS v4 · Vitest (`workerd`)
 
-Requires Bun 1.4.4+ and a Node version supported by `cf` (22.23+, 24.22+, or 26.12+ in the corresponding release lines). Bun manages packages and scripts; `cf` and its Vite configuration loader run on Node.
+</div>
 
-```sh
+---
+
+## 简介
+
+Nexus 是将 [`youming-ai/bun-ts-stack-skills`](https://github.com/youming-ai/bun-ts-stack-skills) 技术栈规范落地为**可生成、可验证、可升级**项目的 CLI 工具（包名 `@youming-ai/create-nexus`）。
+
+| 核心职责 | 说明 |
+| --- | --- |
+| **创建项目（`create`）** | 基于经过验证的依赖锁文件与迁移生成单用户（`app`）或团队多租户（`team`）全栈应用 |
+| **添加模块（`add`）** | 为现有项目增量接入私有 R2 存储（`storage`）路由、绑定扩展与 `workerd` 权限测试 |
+| **项目自检（`doctor`）** | 检查受管文件完整性、核心依赖、本地密钥长度及部署占位配置，支持 `--strict` 与 `--json` |
+| **受控升级（`upgrade`）** | 基于 `nexus.json` 的文件基线哈希执行已审查的版本升级，保留本地自定义修改并在双端冲突时中止 |
+
+所有变更命令均通过不可变的生成计划（`Plan`）执行，支持 `--dry-run` 预览与 `--json` 机器可读输出；CLI 在本地生成代码，绝不在创建或模块安装时自动操作云端资源或覆盖已有目录。
+
+## 预设与模块
+
+| 类型 | 名称 | 包含能力 |
+| --- | --- | --- |
+| 预设 | `app`（默认） | TanStack Start SSR、Tailwind v4、TanStack Form + Zod、D1 + Drizzle、Better Auth（注册、本地模拟收件箱邮箱验证、登录、登出、密码找回与重置、D1 登录限流）、受保护的 `/dashboard`、CSRF 与安全响应头、`AGENTS.md`、`workerd` 集成测试 |
+| 预设 | `team` | 在 `app` 基础上增加 Better Auth Organization 插件、组织创建与切换、成员邮件邀请（校验受邀邮箱归属）、`owner` / `admin` / `member` 服务端 RBAC 校验、租户隔离项目与 D1 原子提交的 `audit_event` 审计日志，以及跨租户越权与撤销成员测试 |
+| 模块 | `storage` | 按认证用户 ID 隔离的私有 R2 上传（`POST /api/files/`，同源校验 + 10 MiB 流式大小限制）与附件下载（`GET /api/files/$id`）接口，自动注入受管扩展 `nexus.bindings.ts` 与 `nexus.test.ts` |
+
+## 快速开始
+
+需要 **Bun `>= 1.4.4`** 以及 `cf` 支持的 **Node 版本（`>= 22.23.0`，仓库根目录与生成项目均提供 `.nvmrc`）**。Bun 负责包管理与脚本执行，`cf` CLI 及其 Vite 配置加载运行在 Node 上。
+
+```bash
+# 1. 安装并构建 CLI
 bun install --frozen-lockfile
 bun run build
+
+# 2. 创建新项目（默认 app 预设）
 bun packages/cli/dist/index.js create ./my-app
 cd my-app
+
+# 3. 配置本地环境变量并执行本地 D1 迁移
 cp .env.example .env
-# Set BETTER_AUTH_SECRET in .env to a private value, at least 32 characters.
-# Generate one with: openssl rand -base64 32
+# 将 .env 中的 BETTER_AUTH_SECRET 替换为至少 32 位的随机密钥（例如 openssl rand -base64 32）
 bun run db:migrate
 bun run dev
 ```
 
-Open http://localhost:3000. Local email is simulated and appears in the Cloudflare Local Explorer (`/__debug`). No real email is sent by local development or tests. Verify the account using the link in that inbox before signing in.
+打开 `http://localhost:3000`。本地开发与测试不会向外部发送真实邮件；注册验证邮件与密码重置邮件会投递到 Cloudflare Local Explorer（`http://localhost:3000/__debug`），点击其中的验证链接即可完成账号激活并登录。
 
-After publication, the intended entry point is `bunx @youming-ai/create-nexus my-app`.
+发布至包管理仓库后，可直接通过 `bunx @youming-ai/create-nexus my-app` 调用。
 
-## Commands
+## CLI 命令
 
-```sh
-# Preview without writing files or installing dependencies
+```bash
+# 预览创建计划（不写入文件、不安装依赖），输出机器可读 JSON
 bun packages/cli/dist/index.js create ./my-app --dry-run --json
 
-# Generate files without installing dependencies
+# 创建单用户应用（跳过自动安装依赖）
 bun packages/cli/dist/index.js ./my-app --preset app --no-install
 
-# Generate a team application
+# 创建团队多租户应用
 bun packages/cli/dist/index.js ./team-app --preset team --no-install
 
-# Add private R2 uploads and downloads
+# 为现有项目预览并添加私有 R2 存储模块
 bun packages/cli/dist/index.js add storage --cwd ./my-app --dry-run
 bun packages/cli/dist/index.js add storage --cwd ./my-app
 
-# Inspect files, dependencies and deployment placeholders
+# 检查项目文件、依赖与部署占位项（--strict 将 warning 视为失败）
 bun packages/cli/dist/index.js doctor --cwd ./my-app --json
+bun packages/cli/dist/index.js doctor --cwd ./my-app --strict
+
+# 预览并执行受控模板升级
+bun packages/cli/dist/index.js upgrade --cwd ./my-app --dry-run
+bun packages/cli/dist/index.js upgrade --cwd ./my-app
 ```
 
-Creation refuses existing directories, including empty directories. Names must start with a lowercase letter and contain only lowercase letters, numbers and hyphens, with a maximum of 48 characters. Use `--name` when the directory basename is not a valid app name.
+- **目录与命名保护**：`create` 拒绝任何已存在的目标目录（包括空目录）。应用名称须以小写字母开头，仅含小写字母、数字和连字符（最长 48 个字符，不以连字符结尾）；当目录名不满足命名规则时可通过 `--name` 指定。
+- **冲突检测与回滚**：`add` 与 `upgrade` 根据 `nexus.json` 记录的 SHA-256 基线哈希比对本地文件，检查规划后是否发生并发修改，拒绝符号链接路径，并在写入异常时回滚已写入文件。详细升级规则见 [`docs/upgrades.md`](docs/upgrades.md)。
 
-`doctor` exits 1 on errors; `--strict` also treats warnings as failures. Warnings include local-only D1 IDs, example senders, absent local secrets and modified generated files. It does not contact Cloudflare or verify production credentials. `--json` emits one JSON result; errors exit 1.
-
-`add` previews or applies a file plan. It refuses conflicts in managed files, checks for changes since planning, rejects symlink destinations, and rolls back files on a caught write error. This is not a crash-safe transaction; use version control for recovery. It never creates cloud resources or sends email.
-
-`upgrade` supports the captured **0.6.0 app development baseline (without modules) → 0.7.0** transition and the current template version. It preserves local edits when the upstream file is unchanged, previews conflicts when both changed, and refuses unreviewed version transitions. This is an internal development baseline, not a previously published release. See [upgrade behavior](docs/upgrades.md).
-
-## What the app includes
-
-- TanStack Start SSR, React, TanStack Router, Tailwind v4 and TanStack Form.
-- Better Auth: registration, email verification, login, logout, password recovery and reset.
-- Drizzle over D1, generated authentication schema, committed migrations and lockfile.
-- A protected workspace; server-side session validation and CSRF/security headers.
-- Vitest tests in workerd with local D1 and email bindings.
-- Optional private R2 storage, with authenticated routes and ownership tests.
-
-Two presets are available: `app` for individual accounts, and `team` for organizations, invitations, owner/admin/member roles, tenant-scoped projects, and project audit events. The team preset checks membership on every business operation and includes cross-tenant and revoked-membership tests. A general module registry and additional reviewed upgrade paths remain future work.
-
-## Repository
+## 仓库结构
 
 ```text
-packages/cli/          command line entry point and distributable package
-packages/core/         manifest, planning, execution and project inspection
-scripts/              package build and generated-project verification
-templates/app/        independently installable reference application
-templates/modules/    optional source modules (currently storage)
-tests/                generator and CLI tests
-docs/                 architecture and legacy configuration
+packages/
+  cli/                  # CLI 入口、参数解析与可发布包（@youming-ai/create-nexus）
+  core/                 # 清单校验、文件树规划、冲突检测、原子执行、doctor 与升级白名单
+templates/
+  app/                  # 标准单用户全栈应用模板（含独立 bun.lock 与 D1 迁移）
+  presets/team/         # 团队多租户预设叠加层（组织、邀请、RBAC、项目与审计日志）
+  modules/storage/      # 可选私有 R2 存储模块
+scripts/
+  build.ts              # 校验工作区版本一致性、构建 CLI 并内嵌模板资产
+  verify-generated.ts   # 打包 .tgz 并在仓库外验证所有预设、模块与跨版本升级
+  smoke-app.ts          # 真实本地 HTTP 链路测试（注册、邮件激活、登录、改密、R2 上传、团队工作区）
+tests/                  # 核心规划、CLI 行为与跨版本升级单元测试及基线夹具
+docs/                   # 架构说明（architecture.md）与升级文档（upgrades.md）
+AGENTS.md               # AI Agent 开发与架构约束说明
 ```
 
-The former Next.js/Supabase app is preserved in `apps/web`, `packages/db`, `packages/ui`, and `packages/typescript-config` for migration reference. It is excluded from the Bun workspace and new CI. Its original README and pnpm/Turbo/hook configuration are in `docs/legacy`; its prior setup is also available in Git history. The new CLI does not migrate existing Supabase data or accounts.
+## 验证与打包
 
-## Validate and package
-
-```sh
-bun run check
-bun run typecheck
-bun run test
-bun run verify:generated
+```bash
+bun run check             # Biome 代码规范与格式检查
+bun run typecheck         # TypeScript 类型检查（tsc --noEmit）
+bun run test              # 运行核心、CLI 与升级单元测试
+bun run verify:generated  # 打包 CLI 并在仓库外执行完整端到端验收
 ```
 
-`verify:generated` builds and packs the CLI, runs the packed executable outside the source tree, generates a fresh app, installs from its frozen lockfile, migrates local D1, typechecks, tests and builds it, then adds storage and repeats the applicable checks. It also generates the team preset with storage, checks its migrations, typechecks, workerd tests, production build, and HTTP authentication/organization flow. The captured 0.6.0 baseline is also upgraded through the packaged CLI and checked with frozen installation, typecheck, workerd tests and build. No cloud credentials are needed.
+`bun run verify:generated` 会执行以下完整验收流程（无需云端凭据）：
+1. 运行 `bun run build` 并在 `packages/cli` 生成 `.tgz` 压缩包；
+2. 将压缩包安装到仓库外含空格的临时目录中，脱离工作区依赖运行打包后的二进制；
+3. 生成 `app` 预设项目，校验 `.gitignore` 规则恢复、`bun install --frozen-lockfile`、本地 D1 迁移、类型检查、`workerd` 测试、生产构建，并启动本地服务跑完真实 HTTP 注册/收件箱链接验证/登录/会话/重置密码链路；
+4. 运行 `doctor` 检查，执行 `add storage` 添加私有 R2 模块，再次跑通类型检查、`workerd` 测试、生产构建与真实 HTTP 私密文件上传下载测试；
+5. 生成 `team` 预设并叠加 `storage` 模块，完成迁移、类型检查、跨组织与角色权限 `workerd` 测试、生产构建及团队工作区 HTTP 冒烟测试；
+6. 从 `tests/fixtures/app-0.6.0.json` 基线夹具还原旧版项目，通过打包后的 CLI 执行 `upgrade --dry-run` 与 `upgrade`，并验证升级后项目的依赖安装、类型检查、`workerd` 测试与构建。
 
-```sh
+构建可分发的压缩包：
+
+```bash
 bun run build
 cd packages/cli
 bun pm pack
 ```
 
-The package bundles the core and templates. It does not depend on a separately published internal package or a mutable Git branch. Publishing and production deployment are separate actions.
+## 架构与技术栈说明
 
-## Stack source
+基于 [`youming-ai/bun-ts-stack-skills` (`ba44f26`)](https://github.com/youming-ai/bun-ts-stack-skills/blob/ba44f2676f059a011536ed5c1cf72db1ede37dba/tanstack/SKILL.md)，并统一采用 Cloudflare 官方 `cf` CLI（`cloudflare.config.ts`）管理构建、本地 D1 迁移与部署，使用与运行库版本一致的 `auth` CLI 生成 Better Auth Drizzle Schema。详见：
 
-Based on [bun-ts-stack-skills at ba44f26](https://github.com/youming-ai/bun-ts-stack-skills/blob/ba44f2676f059a011536ed5c1cf72db1ede37dba/tanstack/SKILL.md). The project deliberately uses `cf` instead of Void, following the supplied Cloudflare CLI instructions. Configuration is `cloudflare.config.ts`; local migration and deployment are explicit. Better Auth schema generation uses the current `auth` CLI matching the installed Better Auth version.
+- [架构设计与技术栈偏差说明](docs/architecture.md)
+- [项目升级与冲突处理规则](docs/upgrades.md)
+- [AI Agent 仓库规范](AGENTS.md)
 
-See [the architecture](docs/architecture.md) and the generated app README for implementation and deployment details.
+## 许可证
+
+[MIT](LICENSE)

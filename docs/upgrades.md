@@ -1,6 +1,6 @@
 # Project upgrades
 
-Supported transition: **0.6.0 app development baseline (without optional modules) → 0.7.0**. The baseline is captured in `tests/fixtures/app-0.6.0.json`; it is a development fixture, not a claim that 0.6.0 was publicly released. The transition adds `.nvmrc` and clarifies local/production environment setup. It does not change dependencies or database schemas.
+Supported transition: **0.6.0 app development baseline (without optional modules) → 0.7.0**. The baseline is captured in `tests/fixtures/app-0.6.0.json`; it is a development fixture, not a claim that 0.6.0 was publicly released. The transition adds `.nvmrc`, `AGENTS.md`, and clarifies local/production environment setup. It does not change dependencies or database schemas.
 
 ```sh
 nexus upgrade --dry-run
@@ -22,6 +22,4 @@ Resolve conflicts against the previewed target, commit the reconciled files, and
 
 Execution checks for edits made since planning, rejects symlink destinations, and restores already-written files on a caught write error. It is not a crash-safe filesystem transaction; use a clean commit for recovery.
 
-Adding a future transition requires a migration gate in `packages/core/src/migrations.ts`, an actual captured source fixture, conflict/preservation tests, and packed-CLI verification of the resulting application. File removals, dependency changes, auth-schema changes and SQL changes need explicit review; the current migration does not exercise those cases.
-
-The original Next.js/Supabase Nexus app has no CLI manifest and is not supported by this updater. Migrating its accounts and business data requires a separate application migration plan.
+Adding a future transition requires a migration gate in `packages/core/src/migrations.ts`, an actual captured source fixture, conflict/preservation tests, and packed-CLI verification of the resulting application. File removals, dependency changes, auth-schema changes, and SQL changes need explicit review; the current migration does not exercise those cases.

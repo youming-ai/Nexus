@@ -34,6 +34,7 @@ test("reviewed development baseline upgrades while preserving user code and priv
   const plan = await planUpgrade(template, storage, root)
   expect(plan.conflicts).toEqual([])
   expect(plan.changes.some((change) => change.path === ".nvmrc")).toBe(true)
+  expect(plan.changes.some((change) => change.path === "AGENTS.md")).toBe(true)
   expect(existsSync(join(root, ".nvmrc"))).toBe(false)
   await executePlan(plan)
   expect((await loadProject(root)).manifest.templateVersion).toBe(VERSION)
