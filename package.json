@@ -1,41 +1,30 @@
 {
   "name": "nexus",
-  "version": "0.5.3",
+  "version": "0.7.0",
   "private": true,
-  "keywords": [
-    "turbo",
-    "nextjs",
-    "tailwind css",
-    "shadcn/ui",
-    "prisma",
-    "supabase"
-  ],
-  "author": {
-    "name": "youming-ai",
-    "email": "um1ng@pm.me",
-    "url": "https://github.com/youming-ai"
+  "type": "module",
+  "packageManager": "bun@1.4.4",
+  "engines": {
+    "bun": ">=1.4.4",
+    "node": ">=22.23.0"
   },
-  "license": "MIT",
+  "workspaces": [
+    "packages/core",
+    "packages/cli"
+  ],
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "biome lint .",
-    "format": "biome format --write .",
-    "check": "biome check .",
-    "check:fix": "biome check --write .",
-    "prepare": "husky",
-    "typecheck": "turbo typecheck"
+    "dev": "bun packages/cli/src/index.ts",
+    "build": "bun scripts/build.ts",
+    "check": "biome check package.json tsconfig.json biome.json packages/core packages/cli/src packages/cli/package.json scripts tests templates/app templates/modules templates/presets --diagnostic-level=error",
+    "format": "biome check --write package.json tsconfig.json biome.json packages/core packages/cli/src packages/cli/package.json scripts tests templates/app templates/modules templates/presets",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test tests",
+    "verify:generated": "bun scripts/verify-generated.ts"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.3",
-    "@workspace/typescript-config": "workspace:*",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.6.0",
-    "turbo": "^2.11.10",
-    "typescript": "^5.9.3"
-  },
-  "packageManager": "pnpm@10.34.9",
-  "engines": {
-    "node": ">=24.0.0"
+    "@biomejs/biome": "2.6.4",
+    "@types/bun": "1.4.4",
+    "typescript": "5.9.3",
+    "zod": "4.6.7"
   }
 }

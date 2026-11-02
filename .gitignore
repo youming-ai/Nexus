@@ -26,6 +26,11 @@ coverage
 out/
 build
 dist
+.cloudflare/
+.tanstack/
+packages/cli/assets/
+packages/cli/LICENSE
+*.tgz
 
 
 # Debug

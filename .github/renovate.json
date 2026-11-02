@@ -1,92 +1,63 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", ":semanticCommits", ":separatePatchReleases"],
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":separatePatchReleases"
+  ],
   "rangeStrategy": "bump",
   "packageRules": [
     {
-      "description": "Group React ecosystem updates",
-      "groupName": "React ecosystem",
-      "matchPackageNames": ["react", "react-dom", "/^@types\\/react/"],
-      "automerge": false,
-      "schedule": ["before 10am on monday"]
+      "description": "Review the tested scaffold stack together",
+      "groupName": "Nexus stack",
+      "matchFileNames": [
+        "templates/app/package.json"
+      ],
+      "automerge": false
     },
     {
-      "description": "Group Next.js updates",
-      "groupName": "Next.js",
-      "matchPackageNames": ["next"],
-      "automerge": false,
-      "schedule": ["before 10am on monday"]
-    },
-    {
-      "description": "Group Radix UI updates",
-      "groupName": "Radix UI",
-      "matchPackageNames": ["/^@radix-ui\\//"],
-      "automerge": false,
-      "automergeType": "pr",
-      "schedule": ["before 10am on monday"]
-    },
-    {
-      "description": "Group TypeScript ecosystem",
-      "groupName": "TypeScript",
-      "matchPackageNames": ["typescript", "/^@types\\//"],
-      "automerge": false,
-      "automergeType": "pr",
-      "schedule": ["before 10am on monday"]
-    },
-    {
-      "description": "Group Biome updates",
-      "groupName": "Biome",
-      "matchPackageNames": ["@biomejs/biome"],
-      "automerge": false,
-      "automergeType": "pr",
-      "schedule": ["before 10am on monday"]
-    },
-    {
-      "description": "Group build tools",
-      "groupName": "Build tools",
-      "matchPackageNames": ["turbo", "/^@tailwindcss\\//", "/^tailwindcss/"],
-      "automerge": false,
-      "automergeType": "pr",
-      "schedule": ["before 10am on monday"]
-    },
-    {
-      "description": "Auto-merge patch and minor updates for utility packages",
-      "groupName": "Utilities",
-      "matchPackageNames": ["clsx", "class-variance-authority", "tailwind-merge", "lucide-react"],
-      "automerge": false,
-      "automergeType": "pr",
-      "matchUpdateTypes": ["patch", "minor"]
-    },
-    {
-      "description": "Group Supabase updates",
-      "groupName": "Supabase",
-      "matchPackageNames": ["/^@supabase\\//"],
-      "automerge": false,
-      "schedule": ["before 10am on monday"]
-    },
-    {
-      "description": "Group Prisma updates",
-      "groupName": "Prisma",
-      "matchPackageNames": ["prisma", "/^@prisma\\//"],
-      "automerge": false,
-      "automergeType": "pr",
-      "schedule": ["before 10am on monday"]
+      "description": "Review CLI toolchain updates",
+      "groupName": "Nexus tooling",
+      "matchFileNames": [
+        "package.json",
+        "packages/core/package.json",
+        "packages/cli/package.json"
+      ],
+      "automerge": false
     }
   ],
-  "schedule": ["before 10am on monday"],
+  "schedule": [
+    "before 10am on monday"
+  ],
   "timezone": "UTC",
-  "labels": ["dependencies"],
-  "assignees": ["youming-bot"],
-  "reviewers": ["youming-bot"],
+  "labels": [
+    "dependencies"
+  ],
+  "assignees": [
+    "youming-bot"
+  ],
+  "reviewers": [
+    "youming-bot"
+  ],
   "prConcurrentLimit": 10,
   "prHourlyLimit": 2,
   "commitMessagePrefix": "chore(deps):",
   "commitMessageAction": "update",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
-  "postUpdateOptions": ["pnpmDedupe"],
+  "postUpdateOptions": [],
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["before 10am on monday"]
-  }
+    "schedule": [
+      "before 10am on monday"
+    ]
+  },
+  "ignorePaths": [
+    "apps/**",
+    "packages/db/**",
+    "packages/ui/**",
+    "packages/typescript-config/**",
+    "docs/legacy/**",
+    "tests/fixtures/**"
+  ]
 }

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "types": ["vite/client", "node", "@cloudflare/vitest-plugin/types"],
+    "paths": { "~/*": ["./src/*"] }
+  },
+  "include": ["src", "db", "test", "*.ts", ".cloudflare/types"]
+}
