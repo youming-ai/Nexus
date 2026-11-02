@@ -158,8 +158,14 @@ function submitAuth(
     case "login":
       return authClient.signIn.email(loginInput.parse(value))
     case "forgot":
-      return authClient.requestPasswordReset({ email: value.email, redirectTo: "/reset-password" })
+      return authClient.requestPasswordReset({
+        ...forgotPasswordInput.parse(value),
+        redirectTo: "/reset-password",
+      })
     case "reset":
-      return authClient.resetPassword({ newPassword: value.password, token })
+      return authClient.resetPassword({
+        newPassword: resetPasswordInput.parse(value).password,
+        token,
+      })
   }
 }

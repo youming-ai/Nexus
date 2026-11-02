@@ -1,6 +1,6 @@
 import { afterEach, expect, test } from "bun:test"
 import { existsSync } from "node:fs"
-import { mkdtemp, readFile, rm } from "node:fs/promises"
+import { mkdtemp, readFile, rm, symlink } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 
@@ -57,4 +57,6 @@ test("no-install, strict doctor, and module preview work outside the repository"
   expect((await invoke(project, "add", "storage", "--dry-run", "--json")).code).toBe(0)
   expect(JSON.parse(await readFile(join(project, "nexus.json"), "utf8")).modules).toEqual([])
   expect((await invoke(root, "my-app", "--no-install", "--json")).code).toBe(1)
+  await symlink(join(root, "missing-target"), join(root, "dangling-app"))
+  expect((await invoke(root, "dangling-app", "--dry-run", "--json")).code).toBe(1)
 })

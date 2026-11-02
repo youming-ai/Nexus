@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs"
+import { lstatSync } from "node:fs"
 import { basename, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import {
@@ -77,7 +77,7 @@ function buildPlan(command: Command, argument: string | undefined, root: string,
   const teamDir = fileURLToPath(new URL("presets/team/", assets))
   switch (command) {
     case "create": {
-      if (!argument || existsSync(resolve(root, argument)))
+      if (!argument || lstatSync(resolve(root, argument), { throwIfNoEntry: false }))
         throw new Error(
           "Provide a new project directory; existing directories are never overwritten"
         )

@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { z } from "zod"
 import { Button } from "~/components/ui/button"
 
 type Field = { name: string; label: string; type?: string }
@@ -26,8 +27,14 @@ export function ActionForm({
           try {
             setMessage(await submit(new FormData(form)))
             form.reset()
-          } catch {
-            setMessage("Unable to complete the request. Check your inputs and permissions.")
+          } catch (error) {
+            setMessage(
+              error instanceof z.ZodError
+                ? (error.issues[0]?.message ?? "Check your inputs.")
+                : error instanceof Error && error.message
+                  ? error.message
+                  : "Unable to complete the request. Check your inputs and permissions."
+            )
           } finally {
             setPending(false)
           }
