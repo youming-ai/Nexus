@@ -115,3 +115,14 @@ test("doctor reports missing files and manifest paths cannot escape the project"
   await writeFile(join(root, "nexus.json"), JSON.stringify(manifest))
   await expect(loadProject(root)).rejects.toThrow("Unsafe project path")
 })
+
+test("doctor handles malformed package.json and missing storage bindings without throwing", async () => {
+  const root = await fixture()
+  await executePlan(await planCreate(template, root, "sample"))
+  await executePlan(await planAddStorage(storage, root))
+  await writeFile(join(root, "cloudflare.config.ts"), "export default {}\n")
+  await writeFile(join(root, "package.json"), "{ invalid json")
+  const findings = await doctor(root)
+  expect(findings.some((finding) => finding.code === "invalid-package-json")).toBe(true)
+  expect(findings.some((finding) => finding.code === "missing-storage-bindings")).toBe(true)
+})

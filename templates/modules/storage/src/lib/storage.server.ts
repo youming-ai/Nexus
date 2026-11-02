@@ -11,6 +11,8 @@ export async function storeFile(ownerId: string, request: Request) {
   if (lengthHeader === null) return new Response("Content-Length is required", { status: 411 })
   if (!/^\d+$/.test(lengthHeader)) return new Response("Invalid Content-Length", { status: 400 })
   const declaredSize = Number(lengthHeader)
+  if (!Number.isSafeInteger(declaredSize) || declaredSize <= 0)
+    return new Response("Invalid Content-Length", { status: 400 })
   if (declaredSize > MAX_BYTES) return new Response("File exceeds 10 MiB", { status: 413 })
   // R2 requires a known-length stream. FixedLengthStream also rejects a body
   // that disagrees with the declared length without buffering the upload.
@@ -24,6 +26,8 @@ export async function storeFile(ownerId: string, request: Request) {
         httpMetadata: { contentType: "application/octet-stream" },
       }),
     ])
+  } catch {
+    return new Response("Upload stream did not match Content-Length", { status: 400 })
   } finally {
     cancellation.abort()
   }

@@ -85,7 +85,8 @@ function TeamWorkspace() {
           submit={async (form) => {
             const data = organizationInput.parse({ name: form.get("name"), slug: form.get("slug") })
             const result = await authClient.organization.create(data)
-            if (result.error) return result.error.message ?? "Unable to create organization"
+            if (result.error)
+              throw new Error(result.error.message ?? "Unable to create organization")
             await router.invalidate()
             return "Organization created."
           }}
@@ -115,7 +116,9 @@ function TeamWorkspace() {
                   ...data,
                   role: "member",
                 })
-                return result.error?.message ?? "Invitation sent."
+                if (result.error)
+                  throw new Error(result.error.message ?? "Unable to send invitation")
+                return "Invitation sent."
               }}
             />
           </>

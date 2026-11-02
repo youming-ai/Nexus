@@ -21,6 +21,15 @@ test("uploads enforce the size limit before storing", async () => {
     })
   )
   expect(response.status).toBe(413)
+  const zeroLength = await storeFile(
+    "owner",
+    new Request("http://localhost:3000/api/files/", {
+      method: "POST",
+      headers: { "Content-Length": "0" },
+      body: "small",
+    })
+  )
+  expect(zeroLength.status).toBe(400)
 })
 
 test("uploads stream into R2 and can be downloaded by their owner", async () => {

@@ -40,6 +40,12 @@ export async function doctor(root: string): Promise<Finding[]> {
         "Set a private BETTER_AUTH_SECRET (at least 32 characters) in .env or the environment",
     })
   const config = await readOptional(join(root, "cloudflare.config.ts"))
+  if (manifest.modules.includes("storage") && !config?.includes("featureBindings"))
+    findings.push({
+      level: "error",
+      code: "missing-storage-bindings",
+      message: "cloudflare.config.ts must spread featureBindings from ./nexus.bindings.ts",
+    })
   if (config?.includes("00000000-0000-4000-8000-000000000001"))
     findings.push({
       level: "warning",
@@ -65,12 +71,29 @@ async function checkDependencies(root: string): Promise<Finding[]> {
   const findings: Finding[] = []
   const packageContent = await readOptional(join(root, "package.json"))
   if (packageContent) {
-    const pkg = z
+    let raw: unknown
+    try {
+      raw = JSON.parse(packageContent)
+    } catch {
+      return [
+        { level: "error", code: "invalid-package-json", message: "package.json is not valid JSON" },
+      ]
+    }
+    const parsed = z
       .object({
-        dependencies: z.record(z.string(), z.string()),
-        devDependencies: z.record(z.string(), z.string()),
+        dependencies: z.record(z.string(), z.string()).default({}),
+        devDependencies: z.record(z.string(), z.string()).default({}),
       })
-      .parse(JSON.parse(packageContent))
+      .safeParse(raw)
+    if (!parsed.success)
+      return [
+        {
+          level: "error",
+          code: "invalid-package-json",
+          message: "package.json has invalid dependency fields",
+        },
+      ]
+    const pkg = parsed.data
     for (const dependency of ["@tanstack/react-start", "better-auth", "drizzle-orm", "zod"]) {
       if (!pkg.dependencies[dependency])
         findings.push({
