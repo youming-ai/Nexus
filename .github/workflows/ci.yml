@@ -23,3 +23,38 @@ jobs:
       - run: bun run typecheck
       - run: bun run test
       - run: bun run verify:generated
+
+  publish:
+    name: Publish to npm
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.22.0'
+          registry-url: 'https://registry.npmjs.org'
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.4'
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - name: Publish if version not yet published
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::error::NPM_TOKEN secret is missing in GitHub repository settings. Please add it to Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          CURRENT_VERSION=$(node -p "require('./packages/cli/package.json').version")
+          PUBLISHED_VERSION=$(npm view @youming-ai/create-nexus@$CURRENT_VERSION version 2>/dev/null || true)
+          if [ "$CURRENT_VERSION" = "$PUBLISHED_VERSION" ]; then
+            echo "Version $CURRENT_VERSION is already published on npm. Skipping."
+          else
+            echo "Publishing @youming-ai/create-nexus@$CURRENT_VERSION to npm..."
+            cd packages/cli
+            npm publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
