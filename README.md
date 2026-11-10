@@ -12,7 +12,7 @@ Bun 1.4.4+ · TanStack Start (React 19) · Void (`void` + `cf`) · Cloudflare Wo
 
 ## 简介
 
-Nexus 是将 [`youming-ai/bun-ts-stack-skills`](https://github.com/youming-ai/bun-ts-stack-skills) 技术栈规范落地为**可生成、可验证、可升级**项目的 CLI 工具（包名 `@youming-ai/create-nexus`）。
+Nexus 是将 [`youming-ai/bun-ts-stack-skills`](https://github.com/youming-ai/bun-ts-stack-skills) 技术栈规范落地为**可生成、可验证、可升级**项目的 CLI 工具，通过 GitHub Releases 分发。
 
 | 核心职责 | 说明 |
 | --- | --- |
@@ -39,17 +39,27 @@ Nexus 是将 [`youming-ai/bun-ts-stack-skills`](https://github.com/youming-ai/bu
 - **Bun `>= 1.4.4`**（负责包管理与脚本执行）
 - **Node `>= 22.23.0`**（`void` / `cf` CLI 与 Vite 配置加载运行在 Node 上，仓库根目录与生成项目均提供 `.nvmrc`）
 
-从源码构建并可选注册全局命令：
+从 [GitHub Releases](https://github.com/youming-ai/Nexus/releases) 下载构建好的 `nexus.tgz`（包含 CLI 与全部模板），解压后直接运行，无需安装 CLI 的 npm 包：
+
+```bash
+curl -fL https://github.com/youming-ai/Nexus/releases/latest/download/nexus.tgz -o nexus.tgz
+mkdir nexus-cli
+tar -xzf nexus.tgz -C nexus-cli
+bun nexus-cli/package/dist/index.js --help
+
+# 当前终端中使用 nexus 命令（路径固定后可写入 shell 配置）
+NEXUS_CLI="$(pwd)/nexus-cli/package/dist/index.js"
+nexus() { bun "$NEXUS_CLI" "$@"; }
+```
+
+以下示例使用该 `nexus` 函数。CLI 下载和运行不经过 npm；生成项目的依赖仍通过 `bun install` 从包注册表安装。更新 CLI 时下载对应版本的 Release 压缩包即可。
+
+开发者也可以从源码运行：
 
 ```bash
 bun install --frozen-lockfile
-bun run build
-
-# 可选：全局注册 create-nexus 与 nexus 命令
-cd packages/cli && bun link && cd ../..
+bun run dev -- --help
 ```
-
-> 发布至 npm 后，可直接通过 `bunx @youming-ai/create-nexus my-app` 调用；本地未 `bun link` 时可使用 `bun packages/cli/dist/index.js <command>`。
 
 ### 2. 创建新项目（`create`）
 
@@ -57,14 +67,14 @@ cd packages/cli && bun link && cd ../..
 
 ```bash
 # 创建默认单用户应用（自动执行 bun install）
-bun packages/cli/dist/index.js create ./my-app
+nexus create ./my-app
 
 # 创建团队多租户应用
-bun packages/cli/dist/index.js create ./my-team-app --preset team
+nexus create ./my-team-app --preset team
 
 # 跳过自动安装依赖，或仅预览生成计划（不写入文件）
-bun packages/cli/dist/index.js create ./my-app --no-install
-bun packages/cli/dist/index.js create ./my-app --dry-run --json
+nexus create ./my-app --no-install
+nexus create ./my-app --dry-run --json
 ```
 
 ### 3. 启动生成出来的项目
@@ -93,10 +103,10 @@ bun run dev
 
 ```bash
 # 预览将新增和修改的文件
-bun packages/cli/dist/index.js add storage --cwd ./my-app --dry-run
+nexus add storage --cwd ./my-app --dry-run
 
 # 正式安装存储模块
-bun packages/cli/dist/index.js add storage --cwd ./my-app
+nexus add storage --cwd ./my-app
 ```
 
 安装后会注入 `POST /api/files/`、`GET /api/files/$id`、`test/storage.test.ts`，并将受管扩展 `nexus.bindings.ts` 中的 `storage` 设为 `true`（由 `void.config.ts` 自动挂载 R2 桶）。
@@ -105,12 +115,12 @@ bun packages/cli/dist/index.js add storage --cwd ./my-app
 
 ```bash
 # 检查受管文件完整性、核心依赖、本地 .env 密钥与 void.lock.json 状态（--strict 将 warning 视为失败）
-bun packages/cli/dist/index.js doctor --cwd ./my-app
-bun packages/cli/dist/index.js doctor --cwd ./my-app --strict --json
+nexus doctor --cwd ./my-app
+nexus doctor --cwd ./my-app --strict --json
 
 # 预览并执行跨版本模板升级（保留未冲突的业务修改，遇到双端冲突自动中止）
-bun packages/cli/dist/index.js upgrade --cwd ./my-app --dry-run
-bun packages/cli/dist/index.js upgrade --cwd ./my-app
+nexus upgrade --cwd ./my-app --dry-run
+nexus upgrade --cwd ./my-app
 ```
 
 - **目录与命名保护**：`create` 拒绝任何已存在的目标目录（包括空目录）。应用名称须以小写字母开头，仅含小写字母、数字和连字符（最长 48 个字符，不以连字符结尾）；当目录名不满足命名规则时可通过 `--name` 指定。
@@ -148,7 +158,7 @@ bun packages/cli/dist/index.js upgrade --cwd ./my-app
 
 ```text
 packages/
-  cli/                  # CLI 入口、参数解析与可发布包（@youming-ai/create-nexus）
+  cli/                  # CLI 入口、参数解析与 Release 分发产物
   core/                 # 清单校验、文件树规划、冲突检测、原子执行、doctor 与升级白名单
 templates/
   app/                  # 标准单用户全栈应用模板（含独立 bun.lock 与 D1 迁移）
@@ -173,8 +183,8 @@ bun run verify:generated  # 打包 CLI 并在仓库外执行完整端到端验�
 ```
 
 `bun run verify:generated` 会执行以下完整验收流程（无需云端凭据）：
-1. 运行 `bun run build` 并在 `packages/cli` 生成 `.tgz` 压缩包；
-2. 将压缩包安装到仓库外含空格的临时目录中，脱离工作区依赖运行打包后的二进制；
+1. 运行 `bun run build`，将 CLI 与模板打包为临时目录中的 `nexus.tgz`；
+2. 将压缩包直接解压到仓库外含空格的临时目录中，不安装 CLI 依赖，运行打包后的入口；
 3. 生成 `app` 预设项目，校验 `.gitignore` 规则恢复、`bun install --frozen-lockfile`、本地 D1 迁移、类型检查、`workerd` 测试、生产构建，并启动本地服务跑完真实 HTTP 注册/收件箱链接验证/登录/会话/重置密码链路；
 4. 运行 `doctor` 检查，执行 `add storage` 添加私有 R2 模块，再次跑通类型检查、`workerd` 测试、生产构建与真实 HTTP 私密文件上传下载测试；
 5. 生成 `team` 预设并叠加 `storage` 模块，完成迁移、类型检查、跨组织与角色权限 `workerd` 测试、生产构建及团队工作区 HTTP 冒烟测试；
@@ -185,8 +195,10 @@ bun run verify:generated  # 打包 CLI 并在仓库外执行完整端到端验�
 ```bash
 bun run build
 cd packages/cli
-bun pm pack
+bun pm pack --filename nexus.tgz
 ```
+
+发布时推送与仓库版本一致的标签（例如 `v0.7.0`）。CI 完整验证通过后，自动创建 GitHub Release 并上传 `nexus.tgz`；使用仓库自带的 `GITHUB_TOKEN`，无需 `NPM_TOKEN`。
 
 ## 架构与技术栈说明
 

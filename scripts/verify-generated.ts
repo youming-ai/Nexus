@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises"
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import baseline from "../tests/fixtures/app-0.6.0.json"
@@ -12,14 +12,12 @@ async function run(command: string[], cwd: string) {
 }
 try {
   await run(["bun", "run", "build"], root)
-  await run(["bun", "pm", "pack", "--destination", temporary], join(root, "packages/cli"))
-  const archive = (await readdir(temporary)).find((name) => name.endsWith(".tgz"))
-  if (!archive) throw new Error("Package archive missing")
+  const archive = join(temporary, "nexus.tgz")
+  await run(["bun", "pm", "pack", "--filename", archive], join(root, "packages/cli"))
   const consumer = join(temporary, "consumer with spaces")
   await mkdir(consumer)
-  await writeFile(join(consumer, "package.json"), '{"name":"consumer","private":true}')
-  await run(["bun", "add", join(temporary, archive)], consumer)
-  const cli = join(consumer, "node_modules/@youming-ai/create-nexus/dist/index.js")
+  await run(["tar", "-xzf", archive, "-C", consumer], temporary)
+  const cli = join(consumer, "package/dist/index.js")
   // Run the packed executable away from source and workspace dependencies.
   await run(["bun", cli, "sample", "--no-install", "--json"], temporary)
   const project = join(temporary, "sample")

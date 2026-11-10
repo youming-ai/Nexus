@@ -1,22 +1,15 @@
-# `@youming-ai/create-nexus`
+# Nexus
 
 Create, inspect, and upgrade full-stack Bun + TanStack Start + Void applications on Cloudflare Workers.
 
-```sh
-create-nexus my-app
-cd my-app
-printf "BETTER_AUTH_SECRET=%s\nBETTER_AUTH_URL=http://localhost:3000\n" "$(openssl rand -base64 32)" > .env
-bun run db:migrate
-bun run dev
-```
-
-Additional commands:
+Download `nexus.tgz` from [GitHub Releases](https://github.com/youming-ai/Nexus/releases) and extract it. Run the bundled CLI directly; no npm installation is needed:
 
 ```sh
-create-nexus my-team-app --preset team
-nexus add storage --cwd ./my-app
-nexus doctor --cwd ./my-app
-nexus upgrade --cwd ./my-app --dry-run
+bun package/dist/index.js create ./my-app
+bun package/dist/index.js create ./my-team-app --preset team
+bun package/dist/index.js add storage --cwd ./my-app
+bun package/dist/index.js doctor --cwd ./my-app
+bun package/dist/index.js upgrade --cwd ./my-app --dry-run
 ```
 
-Use `--help` for command details. Bun `>= 1.4.4` is required; generated apps also need Node `>= 22.23.0` to run `void` / `cf` and Vite configuration loading. The package bundles all template files and does not fetch mutable Git branches at creation time.
+Keep `dist/` and `assets/` together. Use `--help` for command details. Bun `>= 1.4.4` is required; generated apps also need Node `>= 22.23.0` to run `void` / `cf` and Vite configuration loading. All templates are bundled, with no Git branch fetched at creation time. Generated project dependencies are still installed from the package registry using Bun.
