@@ -10,10 +10,14 @@ async function run(command: string[], cwd: string) {
   const child = Bun.spawn(command, { cwd, stdout: "inherit", stderr: "inherit" })
   if ((await child.exited) !== 0) throw new Error(`Failed: ${command.join(" ")}`)
 }
+async function verifyApp(project: string) {
+  for (const script of ["typecheck", "test", "build"]) {
+    await run(["bun", "run", script], project)
+  }
+}
 try {
-  await run(["bun", "run", "build"], root)
   const archive = join(temporary, "nexus.tgz")
-  await run(["bun", "pm", "pack", "--filename", archive], join(root, "packages/cli"))
+  await run(["bun", "run", "pack", archive], root)
   const consumer = join(temporary, "consumer with spaces")
   await mkdir(consumer)
   await run(["tar", "-xzf", archive, "-C", consumer], temporary)
@@ -27,15 +31,11 @@ try {
     throw new Error("Packed template must preserve secret ignore rules")
   await run(["bun", "install", "--frozen-lockfile"], project)
   await run(["bun", "run", "db:migrate"], project)
-  await run(["bun", "run", "typecheck"], project)
-  await run(["bun", "run", "test"], project)
-  await run(["bun", "run", "build"], project)
+  await verifyApp(project)
   await smokeApp(project)
   await run(["bun", cli, "doctor", "--json"], project)
   await run(["bun", cli, "add", "storage", "--json"], project)
-  await run(["bun", "run", "typecheck"], project)
-  await run(["bun", "run", "test"], project)
-  await run(["bun", "run", "build"], project)
+  await verifyApp(project)
   await rm(join(project, ".env"))
   // Independent fixtures also isolate persistent authentication rate-limit buckets.
   await rm(join(project, ".cloudflare/state"), { recursive: true, force: true })
@@ -48,9 +48,7 @@ try {
   await run(["bun", cli, "add", "storage", "--json"], teamProject)
   await run(["bun", "install", "--frozen-lockfile"], teamProject)
   await run(["bun", "run", "db:migrate"], teamProject)
-  await run(["bun", "run", "typecheck"], teamProject)
-  await run(["bun", "run", "test"], teamProject)
-  await run(["bun", "run", "build"], teamProject)
+  await verifyApp(teamProject)
   await smokeApp(teamProject, true, true)
   const upgradeProject = join(temporary, "upgrade-example")
   for (const [path, content] of Object.entries(baseline.files)) {
@@ -62,9 +60,7 @@ try {
   await run(["bun", cli, "upgrade", "--json"], upgradeProject)
   await run(["bun", "install", "--frozen-lockfile"], upgradeProject)
   await run(["bun", "run", "db:migrate"], upgradeProject)
-  await run(["bun", "run", "typecheck"], upgradeProject)
-  await run(["bun", "run", "test"], upgradeProject)
-  await run(["bun", "run", "build"], upgradeProject)
+  await verifyApp(upgradeProject)
   console.log("Packed CLI, app/team presets, storage module, and baseline upgrade verified.")
 } finally {
   await rm(temporary, { recursive: true, force: true })

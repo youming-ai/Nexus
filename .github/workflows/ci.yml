@@ -42,10 +42,7 @@ jobs:
           VERSION=$(bun -p "require('./package.json').version")
           test "$GITHUB_REF_NAME" = "v$VERSION"
       - run: bun install --frozen-lockfile
-      - run: bun run build
-      - name: Package CLI and templates
-        working-directory: packages/cli
-        run: bun pm pack --filename nexus.tgz
+      - run: bun run pack
       - name: Create release with bundled CLI
         run: gh release create "$GITHUB_REF_NAME" packages/cli/nexus.tgz --verify-tag --generate-notes --title "Nexus $GITHUB_REF_NAME"
         env:

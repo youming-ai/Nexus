@@ -16,6 +16,7 @@
   "scripts": {
     "dev": "bun packages/cli/src/index.ts",
     "build": "bun scripts/build.ts",
+    "pack": "bun scripts/pack.ts",
     "check": "biome check package.json tsconfig.json biome.json packages/core packages/cli/src packages/cli/package.json scripts tests templates/app templates/modules templates/presets --diagnostic-level=error",
     "format": "biome check --write package.json tsconfig.json biome.json packages/core packages/cli/src packages/cli/package.json scripts tests templates/app templates/modules templates/presets",
     "typecheck": "tsc --noEmit",

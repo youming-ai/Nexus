@@ -4,7 +4,7 @@
 
 ## 项目与边界
 
-Nexus 是将 `youming-ai/bun-ts-stack-skills`（Bun + TanStack Start + Void + Cloudflare Workers + D1 + Drizzle + Better Auth + Void Email + Tailwind v4）落地为可生成、可验证、可升级工程的 CLI 脚手架（发布包名 `@youming-ai/create-nexus`，提供 `create-nexus` 与 `nexus` 两个命令）。
+Nexus 是将 `youming-ai/bun-ts-stack-skills`（Bun + TanStack Start + Void + Cloudflare Workers + D1 + Drizzle + Better Auth + Void Email + Tailwind v4）落地为可生成、可验证、可升级工程的 CLI 脚手架（通过 GitHub Releases 分发，提供 `create-nexus` 与 `nexus` 两个命令）。
 
 Nexus 只承担四项职责：
 
@@ -29,7 +29,8 @@ templates/
   presets/team/          # 团队多租户预设叠加层（组织、邀请、RBAC 权限隔离、项目与 D1 原子审计日志）
   modules/storage/       # 可选私有 R2 存储模块（受管绑定扩展、鉴权上传下载路由与测试）
 scripts/
-  build.ts               # 校验版本一致性、打包 CLI 并内嵌模板资产（处理 .gitignore -> gitignore）
+  build.ts               # 校验版本一致性、构建 CLI 并内嵌模板资产
+  pack.ts                # 构建并打包 GitHub Release 压缩包（保留 .gitignore）
   verify-generated.ts    # 打包 .tgz 后在仓库外带空格路径下执行的完整端到端验收
   smoke-app.ts           # 启动真实本地服务器验证注册、本地收件箱邮件链接、登录、重置密码、R2 上传与团队权限
 tests/
@@ -54,10 +55,11 @@ docs/
 | `bun install --frozen-lockfile` | 安装仓库依赖 |
 | `bun run dev -- <args>` | 直接从源码运行 CLI（`packages/cli/src/index.ts`） |
 | `bun run build` | 校验版本一致性，构建 `packages/cli/dist` 并打包模板到 `packages/cli/assets` |
+| `bun run pack [输出路径]` | 构建并打包 CLI 与模板，默认输出 `packages/cli/nexus.tgz` |
 | `bun run check` / `bun run format` | Biome 静态检查 / 自动格式化 |
 | `bun run typecheck` | TypeScript `--noEmit` 类型检查 |
 | `bun run test` | 运行 `tests/` 下的核心、CLI 与升级单元测试 |
-| `bun run verify:generated` | **完整端到端门禁**：打包 `.tgz` → 外部带空格目录安装 → 生成 `app` 预设并跑迁移/类型检查/workerd 测试/构建/HTTP 冒烟 → `doctor` → `add storage` 验收 → 生成 `team` + `storage` 全套验收 → `0.6.0 -> 0.7.0` 升级验收 |
+| `bun run verify:generated` | **完整端到端门禁**：打包 `.tgz` → 外部带空格目录解压 → 生成 `app` 预设并跑迁移/类型检查/workerd 测试/构建/HTTP 冒烟 → `doctor` → `add storage` 验收 → 生成 `team` + `storage` 全套验收 → `0.6.0 -> 0.7.0` 升级验收 |
 
 修改 `packages/`、`templates/` 或 `scripts/` 后，提交前必须跑通：
 

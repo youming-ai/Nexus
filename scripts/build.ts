@@ -24,8 +24,7 @@ for (const directory of ["app", "modules/storage", "presets/team"]) {
   for (const [path, content] of Object.entries(
     await readTree(join(root, "templates", directory))
   )) {
-    // Package managers omit .gitignore from tarballs. Restore its name at generation time.
-    const destination = join(cli, "assets", directory, path === ".gitignore" ? "gitignore" : path)
+    const destination = join(cli, "assets", directory, path)
     await mkdir(resolve(destination, ".."), { recursive: true })
     await writeFile(destination, content)
   }

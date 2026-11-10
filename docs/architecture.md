@@ -12,7 +12,7 @@ Nexus converts a tested application template into a standalone project. Its CLI 
 
 All creation, module addition, and upgrades go through an immutable `Plan`. Preview (`--dry-run`) prints that plan without writes. Execution validates destinations, rejects symlinks, and verifies current file contents before replacing files. `nexus.json` records generator/template versions, preset, enabled modules, and SHA-256 hashes of baseline files. Hashes identify local edits; they are not a cryptographic signature.
 
-The CLI archive contains a bundled executable and template assets (including `AGENTS.md` for AI coding assistants). `@nexus/core` is a build-time workspace dependency bundled into `dist/index.js`, not a separately installed runtime dependency. Packaging tests run outside the repository checkout in a directory path with spaces to expose missing assets and workspace assumptions.
+The CLI archive contains a bundled executable and template assets (including `AGENTS.md` for AI coding assistants). `@nexus/core` is a build-time workspace dependency bundled into `dist/index.js`, not a separately installed runtime dependency. The `package/` archive layout preserves the documented entry path. Template `.gitignore` files retain their names without package-manager renaming. Packaging tests run outside the repository checkout in a directory path with spaces to expose missing assets and workspace assumptions.
 
 ## Application boundaries
 
@@ -34,4 +34,4 @@ Source: `youming-ai/bun-ts-stack-skills` commit `ba44f2676f059a011536ed5c1cf72db
 
 ## Release gates
 
-Every change to the CLI or templates must pass `bun run check`, `bun run typecheck`, `bun run test`, and `bun run verify:generated`. `verify:generated` packs the CLI tarball, installs it outside the workspace, scaffolds `app` and `team` presets, adds `storage`, runs local D1 migrations, typechecks, runs `workerd` tests, builds production bundles, exercises live HTTP authentication/storage/organization flows, and verifies the captured `0.6.0 -> 0.7.0` upgrade path.
+Every change to the CLI or templates must pass `bun run check`, `bun run typecheck`, `bun run test`, and `bun run verify:generated`. `verify:generated` runs `bun run pack` to build a tar archive containing only the CLI, templates, README, and license, extracts it outside the workspace, scaffolds `app` and `team` presets, adds `storage`, runs local D1 migrations, typechecks, runs `workerd` tests, builds production bundles, exercises live HTTP authentication/storage/organization flows, and verifies the captured `0.6.0 -> 0.7.0` upgrade path.
