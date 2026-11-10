@@ -24,11 +24,7 @@ export async function renderApp(templateDir: string, name: string, overlayDir?: 
   if (overlayDir) Object.assign(source, await readTree(overlayDir))
   const files: Record<string, string> = {}
   for (const [path, content] of Object.entries(source)) {
-    files[path === "gitignore" ? ".gitignore" : path] = [
-      "package.json",
-      "bun.lock",
-      "void.config.ts",
-    ].includes(path)
+    files[path] = ["package.json", "bun.lock", "void.config.ts"].includes(path)
       ? content.replaceAll('"nexus-app"', JSON.stringify(name))
       : content
   }

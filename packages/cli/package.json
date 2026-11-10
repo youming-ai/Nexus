@@ -2,36 +2,12 @@
   "name": "@youming-ai/create-nexus",
   "version": "0.7.0",
   "description": "CLI scaffold to create, inspect, and upgrade full-stack Bun + TanStack Start applications on Cloudflare Workers",
-  "keywords": [
-    "bun",
-    "tanstack-start",
-    "void",
-    "cloudflare-workers",
-    "cloudflare-d1",
-    "cloudflare-r2",
-    "drizzle-orm",
-    "better-auth",
-    "tailwindcss",
-    "typescript",
-    "cli",
-    "scaffold"
-  ],
   "type": "module",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/youming-ai/Nexus.git"
-  },
   "bin": {
     "create-nexus": "dist/index.js",
     "nexus": "dist/index.js"
   },
-  "files": [
-    "dist",
-    "assets",
-    "README.md",
-    "LICENSE"
-  ],
   "engines": {
     "bun": ">=1.4.4"
   },
