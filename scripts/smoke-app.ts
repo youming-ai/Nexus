@@ -5,7 +5,12 @@ import { z } from "zod"
 const origin = "http://localhost:3000"
 const mailboxPath = "/__void/inbox"
 
-export async function smokeApp(project: string, storage = false, team = false) {
+export async function smokeApp(
+  project: string,
+  storage = false,
+  team = false,
+  expectedDashboardText?: string
+) {
   try {
     await fetch(origin, { signal: AbortSignal.timeout(500) })
     throw new Error(
@@ -33,7 +38,7 @@ export async function smokeApp(project: string, storage = false, team = false) {
   })
   try {
     await waitForServer(child)
-    await checkFlows(project, storage, team)
+    await checkFlows(project, storage, team, expectedDashboardText)
     console.log(
       `HTTP smoke passed: verification, login, session, password reset${storage ? ", private uploads" : ""}${team ? ", team workspace" : ""}`
     )
@@ -65,7 +70,12 @@ async function waitForServer(child: ReturnType<typeof spawn>) {
   throw new Error("Development server did not become ready")
 }
 
-async function checkFlows(project: string, storage: boolean, team: boolean) {
+async function checkFlows(
+  project: string,
+  storage: boolean,
+  team: boolean,
+  expectedDashboardText?: string
+) {
   const email = `local-${crypto.randomUUID()}@example.com`
   const password = "a-private-smoke-test-password-42"
   const cookies = new Map<string, string>()
@@ -114,7 +124,10 @@ async function checkFlows(project: string, storage: boolean, team: boolean) {
     "email verification"
   )
   assertStatus(await request("/api/auth/sign-in/email", { email, password }), 200, "verified login")
-  assertStatus(await request("/dashboard"), 200, "authenticated workspace")
+  const dashboard = await request("/dashboard")
+  assertStatus(dashboard, 200, "authenticated workspace")
+  if (expectedDashboardText && !(await dashboard.text()).includes(expectedDashboardText))
+    throw new Error("Customized business UI is missing from the authenticated workspace")
   if (team) {
     assertStatus(
       await request("/api/auth/organization/create", {
