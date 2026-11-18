@@ -6,7 +6,7 @@
 
 ## 快速开始
 
-需要 Bun ≥ 1.4.4 和 Node ≥ 22.23.0。
+需要 Bun ≥ 1.4.4 和 Node ≥ 24.22.0。
 
 从 [GitHub Releases](https://github.com/youming-ai/Nexus/releases) 下载 CLI 与模板，无需安装 npm 包：
 

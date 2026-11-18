@@ -5,7 +5,7 @@ This project was generated with **Nexus** (`preset: app`). Check `nexus.json` fo
 ## Stack & Runtime Boundaries
 
 - **Package manager & scripts**: Bun (`bun install`, `bun run <script>`).
-- **Framework & Deploy CLI**: TanStack Start (React 19 + TanStack Router) + **Void** (`void.config.ts`, `voidPlugin()`, `void db`, `void deploy`, `void/env`, `void/email`). Requires Node `>= 22.23.0` (see `.nvmrc`). Do not write `wrangler.toml` or `.env.example`.
+- **Framework & Deploy CLI**: TanStack Start (React 19 + TanStack Router) + **Void** (`void.config.ts`, `voidPlugin()`, `void db`, `void deploy`, `void/env`, `void/email`). Requires Node `>= 24.22.0` (see `.nvmrc`). Do not write `wrangler.toml` or `.env.example`.
 - **Production & test runtime**: Cloudflare Workers (`workerd` V8 isolate). Use Web-standard APIs (`fetch`, `crypto.randomUUID()`, Web Streams); never use `Bun.*` or `node:fs` inside Worker code.
 - **Database & Auth**: Cloudflare D1 + Drizzle ORM (`drizzle-orm/d1`) + Better Auth + Cloudflare Email Sending (`void/email`).
 
