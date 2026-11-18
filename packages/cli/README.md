@@ -12,4 +12,4 @@ bun package/dist/index.js doctor --cwd ./my-app
 bun package/dist/index.js upgrade --cwd ./my-app --dry-run
 ```
 
-Keep `dist/` and `assets/` together. Use `--help` for command details. Bun `>= 1.4.4` is required; generated apps also need Node `>= 22.23.0` to run `void` / `cf` and Vite configuration loading. All templates are bundled, with no Git branch fetched at creation time. Generated project dependencies are still installed from the package registry using Bun.
+Keep `dist/` and `assets/` together. Use `--help` for command details. Bun `>= 1.4.4` is required; generated apps also need Node `>= 24.22.0` to run `void` / `cf` and Vite configuration loading. All templates are bundled, with no Git branch fetched at creation time. Generated project dependencies are still installed from the package registry using Bun.
